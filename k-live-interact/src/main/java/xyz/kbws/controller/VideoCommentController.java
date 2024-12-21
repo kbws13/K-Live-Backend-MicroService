@@ -16,6 +16,7 @@ import xyz.kbws.api.consumer.VideoClient;
 import xyz.kbws.common.BaseResponse;
 import xyz.kbws.common.ErrorCode;
 import xyz.kbws.common.ResultUtils;
+import xyz.kbws.constant.CommonConstant;
 import xyz.kbws.constant.UserConstant;
 import xyz.kbws.exception.BusinessException;
 import xyz.kbws.model.dto.comment.CommentAddRequest;
@@ -63,6 +64,24 @@ public class VideoCommentController {
 
     @Resource
     private RedisComponent redisComponent;
+
+    @ApiOperation(value = "加载所有评论")
+    @AuthCheck
+    @PostMapping("/loadAllComment")
+    public BaseResponse<Page<VideoComment>> loadComment(@RequestBody VideoCommentQuery videoCommentQuery, HttpServletRequest request) {
+        String token = request.getHeader("token");
+        UserVO userVO = redisComponent.getUserVO(token);
+        videoCommentQuery.setSortField("id");
+        videoCommentQuery.setSortOrder(CommonConstant.SORT_ORDER_DESC);
+        videoCommentQuery.setUserId(userVO.getId());
+        Page<VideoComment> page = new Page<>();
+        List<VideoComment> videoComments = videoCommentService.listByParams(videoCommentQuery);
+        page.setRecords(videoComments);
+        page.setTotal(videoComments.size());
+        page.setCurrent(videoCommentQuery.getCurrent());
+        page.setSize(videoCommentQuery.getPageSize());
+        return ResultUtils.success(page);
+    }
 
     @ApiOperation(value = "发布评论")
     @AuthCheck

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.kbws.mapper.StatisticInfoMapper">
+
+    <resultMap id="BaseResultMap" type="xyz.kbws.model.entity.StatisticInfo">
+        <result property="statisticDate" column="statisticDate" jdbcType="VARCHAR"/>
+        <result property="userId" column="userId" jdbcType="VARCHAR"/>
+        <result property="dataType" column="dataType" jdbcType="TINYINT"/>
+        <result property="count" column="count" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        statisticDate,userId,dataType,
+        count
+    </sql>
+
+    <select id="selectFans" resultType="xyz.kbws.model.entity.StatisticInfo">
+        select focusUserId,
+               count(1) statisticCount
+        from focus
+        where
+            <![CDATA[ DATE_FORMAT(focusTime, '%Y-%m-%d') = #{statisticDate} ]]>
+        group by focusUserId
+    </select>
+
+    <select id="selectComment" resultType="xyz.kbws.model.entity.StatisticInfo">
+        select videoUserId as userId,
+               count(1)       statisticCount
+        from videoComment
+        where
+            <![CDATA[ DATE_FORMAT(postTime, '%Y-%m-%d') = #{statisticDate} ]]>
+        group by videoUserId
+    </select>
+
+    <select id="selectAction" resultType="xyz.kbws.model.entity.StatisticInfo">
+        select videoUserId as userId, actionType as dataType, sum(count) as statisticCount
+        from action
+        where
+        <![CDATA[ DATE_FORMAT(actionTime, '%Y-%m-%d')=#{statisticDate} ]]>
+        and
+        actionType in (<foreach collection="actionTypeArray" separator="," item="item">#{item}</foreach>)
+        group by videoUserId, actionType
+    </select>
+
+    <select id="selectTotalCount" resultType="java.util.Map">
+        select
+        ifnull(sum(playCount, 0)),
+        ifnull(sum(likeCount, 0)),
+        ifnull(sum(danmuCount, 0)),
+        ifnull(sum(commentCount, 0)),
+        ifnull(sum(coinCount, 0)),
+        ifnull(sum(collectCount, 0))
+        from video
+        <where>
+            <if test="userId != null">
+                userId = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectListTotalInfo" resultType="xyz.kbws.model.entity.StatisticInfo">
+        select ifnull(sum(count), 0) as count,
+               statisticDate,
+               dataType
+        from statisticInfo
+        where statisticDate = #{query.statisticDate}
+        group by dataType, statisticDate
+    </select>
+
+    <select id="selectUserCountTotalInfo" resultType="xyz.kbws.model.entity.StatisticInfo">
+        select count(1) as count, DATE_FORMAT(createTime, '%Y-%m-%d') as statisticDate
+        from user
+        group by statisticDate
+        order by statisticDate desc
+    </select>
+</mapper>

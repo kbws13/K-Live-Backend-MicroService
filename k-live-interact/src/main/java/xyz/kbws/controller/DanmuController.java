@@ -2,6 +2,7 @@ package xyz.kbws.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,7 @@ import xyz.kbws.service.DanmuService;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,5 +75,31 @@ public class DanmuController {
         danmuQuery.setQueryVideoInfo(true);
         List<Danmu> list = danmuService.selectListByParam(danmuQuery);
         return ResultUtils.success(list);
+    }
+
+    @ApiOperation(value = "加载所有弹幕")
+    @AuthCheck
+    @PostMapping("/loadAllDanmu")
+    public BaseResponse<Page<Danmu>> loadDanmu(@RequestBody DanmuQuery danmuQuery, HttpServletRequest request) {
+        String token = request.getHeader("token");
+        UserVO userVO = redisComponent.getUserVO(token);
+        danmuQuery.setUserId(userVO.getId());
+        danmuQuery.setQueryVideoInfo(true);
+        Page<Danmu> page = new Page<>();
+        List<Danmu> danmuList = danmuService.selectListByParam(danmuQuery);
+        page.setRecords(danmuList);
+        page.setTotal(danmuList.size());
+        page.setCurrent(danmuQuery.getCurrent());
+        page.setSize(danmuQuery.getPageSize());
+        return ResultUtils.success(page);
+    }
+
+    @ApiOperation(value = "删除弹幕")
+    @AuthCheck
+    @PostMapping("/deleteDanmu")
+    public void deleteDanmu(@NotNull Integer danmuId, HttpServletRequest request) {
+        String token = request.getHeader("token");
+        UserVO userVO = redisComponent.getUserVO(token);
+        danmuService.deleteDanmu(userVO.getId(), danmuId);
     }
 }
