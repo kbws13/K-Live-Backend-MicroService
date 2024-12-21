@@ -169,6 +169,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
+    public Integer updateCoinCount(String userId, Integer changeCount) {
+        return userMapper.updateCoinCount(userId, changeCount);
+    }
+
+    @Override
     public QueryWrapper<User> getQueryWrapper(UserLoadRequest userLoadRequest) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         String nickName = userLoadRequest.getNickName();

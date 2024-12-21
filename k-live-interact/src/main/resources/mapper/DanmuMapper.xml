@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.kbws.mapper.DanmuMapper">
+
+    <resultMap id="BaseResultMap" type="xyz.kbws.model.entity.Danmu">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="videoId" column="videoId" jdbcType="VARCHAR"/>
+        <result property="fileId" column="fileId" jdbcType="VARCHAR"/>
+        <result property="userId" column="userId" jdbcType="VARCHAR"/>
+        <result property="postTime" column="postTime" jdbcType="TIMESTAMP"/>
+        <result property="text" column="text" jdbcType="VARCHAR"/>
+        <result property="mode" column="mode" jdbcType="TINYINT"/>
+        <result property="color" column="color" jdbcType="VARCHAR"/>
+        <result property="time" column="time" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,videoId,fileId,
+        userId,postTime,text,
+        mode,color,time
+    </sql>
+
+    <sql id="queryCondition">
+        where
+        <if test="query.videoId != null and query.videoId != ''">
+            videoId = #{query.videoId}
+        </if>
+        <if test="query.userId != null and query.userId != ''">
+            and vd.userId = #{query.userId}
+        </if>
+        <if test="query.videoNameFuzzy != null and query.videoNameFuzzy != ''">
+            and vd.name like CONCAT('%', #{query.videoNameFuzzy}, '%')
+        </if>
+    </sql>
+
+    <select id="selectList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        <if test="query.queryVideoInfo">
+            , vd.name videoName, vd.cover videoCover, u.nickName
+        </if>
+        from danmu v
+        <if test="query.queryVideoInfo">
+            inner join video vd on vd.id = v.videoId
+            left join `user` u on u.id = v.userId
+        </if>
+        <include refid="queryCondition"/>
+        <if test="query.sortField != null">
+            order by ${query.sortField} ${query.sortOrder}
+        </if>
+        <if test="query.pageSize !=- null">
+            LIMIT #{query.pageSize} OFFSET #{query.current}
+        </if>
+    </select>
+
+    <select id="selectCount" resultType="java.lang.Integer">
+        select count(1) from danmu v
+        <if test="query.queryVideoInfo">
+            inner join video vd on vd.id = v.videoId
+        </if>
+        <include refid="queryCondition"/>
+    </select>
+</mapper>

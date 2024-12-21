@@ -22,4 +22,6 @@ public interface VideoService extends IService<Video> {
     void addPlayCount(String videoId);
 
     Boolean recommendVideo(String videoId);
+
+    void updateCountInfo(String videoId, String field, Integer changeCount);
 }

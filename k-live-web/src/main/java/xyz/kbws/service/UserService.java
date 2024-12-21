@@ -26,6 +26,8 @@ public interface UserService extends IService<User> {
 
     Boolean changeStatus(UserChangeStatusRequest userChangeStatusRequest);
 
+    Integer updateCoinCount(String userId, Integer changeCount);
+
     QueryWrapper<User> getQueryWrapper(UserLoadRequest userLoadRequest);
 
 }

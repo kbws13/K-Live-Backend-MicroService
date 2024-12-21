@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.kbws.mapper.VideoCommentMapper">
+
+    <resultMap id="BaseResultMap" type="xyz.kbws.model.entity.VideoComment">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="parentCommentId" column="parentCommentId" jdbcType="INTEGER"/>
+        <result property="videoId" column="videoId" jdbcType="VARCHAR"/>
+        <result property="videoUserId" column="videoUserId" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="imgPath" column="imgPath" jdbcType="VARCHAR"/>
+        <result property="userId" column="userId" jdbcType="VARCHAR"/>
+        <result property="replyUserId" column="replyUserId" jdbcType="VARCHAR"/>
+        <result property="topType" column="topType" jdbcType="TINYINT"/>
+        <result property="postTime" column="postTime" jdbcType="TIMESTAMP"/>
+        <result property="likeCount" column="likeCount" jdbcType="INTEGER"/>
+        <result property="hateCount" column="hateCount" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMapChildren" type="xyz.kbws.model.entity.VideoComment" extends="BaseResultMap">
+        <collection property="children" column="id" select="xyz.kbws.mapper.VideoCommentMapper.selectChildrenComment">
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        v.id,parentCommentId,videoId,
+        videoUserId,content,imgPath,
+        userId,replyUserId,topType,
+        postTime,likeCount,hateCount
+    </sql>
+
+    <sql id="query_condition">
+        where
+        <if test="query.videoId != null and query.videoId != ''">
+            videoId = #{query.videoId}
+        </if>
+        <if test="query.parentCommandId != null and query.parentCommandId != ''">
+            and parentCommandId = #{query.parentCommandId}
+        </if>
+        <if test="query.topType != null and query.topType != ''">
+            and topType = #{query.topType}
+        </if>
+        <if test="query.userId != null and query.userId != ''">
+            and userId = #{query.userId}
+        </if>
+        <if test="query.videoNameFuzzy != null and query.videoNameFuzzy != ''">
+            and vd.name like CDATA('%', #{query.videoNameFuzzy}, '%')
+        </if>
+    </sql>
+
+    <select id="selectList" resultType="xyz.kbws.model.entity.VideoComment">
+        select
+        <include refid="Base_Column_List"/>
+        <if test="query.queryVideoInfo">
+            , vd.name videoName, vd.cover, u.nickName, u.avatar, u2.nickName replyNickName
+        </if>
+        from videoComment v
+        <if test="query.queryVideoInfo">
+            inner join video vd on vd.id = v.videoId
+            left join user u on u.id = v.userId
+            left join user u2 on u2.id = v.replyUserId
+        </if>
+        <include refid="query_condition"/>
+        <if test="query.sortField != null">
+            order by ${query.sortField}
+        </if>
+        <if test="query.pageSize !=- null">
+            LIMIT #{query.pageSize} OFFSET #{query.current}
+        </if>
+    </select>
+
+    <select id="selectCount" resultType="java.lang.Integer">
+        select count(1) from videoComment v
+        <if test="query.queryVideoInfo">
+            inner join video vd on vd.id = v.videoId
+        </if>
+        <include refid="query_condition"/>
+    </select>
+
+    <select id="selectChildrenComment" resultMap="BaseResultMap">
+        select v.*, u.nickName, u.avatar, u2.nickName replyNickName, u2.avatar replyAvatar
+        from videoComment v
+                 inner join user u on v.userId = u.id
+                 left join user u2 on u2.id = v.replyUserId
+        where parentCommentId = #{commentId}
+        order by v.id asc
+    </select>
+
+    <select id="selectListWithChildren" resultMap="BaseResultMapChildren">
+        select
+        <include refid="Base_Column_List"/>, u.nickName, u.avatar
+        from videoComment v left join user u on v.userId = u.id
+        where
+        <include refid="query_condition"/>
+        <if test="query.sortField != null">
+            order by ${query.sortField}
+        </if>
+        <if test="query.pageSize !=- null">
+            LIMIT #{query.pageSize} OFFSET #{query.current}
+        </if>
+    </select>
+
+    <update id="updateCount">
+        update videoComment set ${field} = ${field} + #{changeCount}
+        <if test="opposeField != null">
+            ,${opposeField} = ${opposeField} + #{opposeChangeCount}
+        </if>
+        where id = #{id}
+    </update>
+</mapper>

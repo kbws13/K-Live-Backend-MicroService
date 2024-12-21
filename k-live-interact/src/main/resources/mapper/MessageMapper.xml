@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.kbws.mapper.MessageMapper">
+
+    <resultMap id="BaseResultMap" type="xyz.kbws.model.entity.Message">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="userId" jdbcType="VARCHAR"/>
+        <result property="videoId" column="videoId" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="TINYINT"/>
+        <result property="sendUserId" column="sendUserId" jdbcType="VARCHAR"/>
+        <result property="readType" column="readType" jdbcType="TINYINT"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="extendJson" column="extendJson" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,userId,videoId,
+        type,sendUserId,readType,
+        createTime,extendJson
+    </sql>
+
+    <sql id="queryCondition">
+        <if test="query.id != null">
+            and u.id = #{query.id}
+        </if>
+        <if test="query.userId != null">
+            and u.userId = #{query.userId}
+        </if>
+        <if test="query.type != null">
+            and u.type = #{query.type}
+        </if>
+        <if test="query.readType != null">
+            and u.readType = #{query.readType}
+        </if>
+    </sql>
+
+    <select id="getMessageTypeNoReadCount" resultType="xyz.kbws.model.vo.MessageCountVO">
+        select type messageType, count(1) messageCount
+        from message
+        where userId = #{userId}
+          and readType = 0
+        group by type
+    </select>
+
+    <select id="selectList" resultType="xyz.kbws.model.entity.Message">
+        select
+        <include refid="Base_Column_List"/>
+        , user.avatar sendUserAvatar, user.nickName sendUserName, v.name videoName, v.cover videoCover
+        from message u
+        left join video v on u.videoId = v.id
+        left join user on user.id = u.sendUserId
+        where
+        <include refid="queryCondition"/>
+        <if test="query.sortField != null">
+            order by #{query.sortField} #{videoQueryRequest.sortOrder}
+        </if>
+        <if test="query.pageSize != null">
+            limit #{query.pageSize} offset #{query.current}
+        </if>
+    </select>
+</mapper>

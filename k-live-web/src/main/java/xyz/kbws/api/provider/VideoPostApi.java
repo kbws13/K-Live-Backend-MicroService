@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.kbws.model.entity.VideoFilePost;
+import xyz.kbws.model.entity.VideoPost;
 import xyz.kbws.service.VideoPostService;
 
 import javax.annotation.Resource;
@@ -23,5 +24,10 @@ public class VideoPostApi {
     @PostMapping("/transferVideoFile")
     public void transferVideoFile(VideoFilePost videoFilePost) {
         videoPostService.transferVideoFile(videoFilePost);
+    }
+
+    @PostMapping("/selectById")
+    public VideoPost selectById(String videoId) {
+        return videoPostService.getById(videoId);
     }
 }

@@ -33,4 +33,9 @@ spring:
             - Path=/file/**
           filters:
             - StripPrefix=1
-            - AdminFilter
+        - id: interact
+          uri: lb://k-live-interact
+          predicates:
+            - Path=/interact/**
+          filters:
+            - StripPrefix=1

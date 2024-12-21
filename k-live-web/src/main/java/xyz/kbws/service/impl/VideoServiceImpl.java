@@ -148,6 +148,11 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
         video.setRecommendType(recommendType);
         return this.updateById(video);
     }
+
+    @Override
+    public void updateCountInfo(String videoId, String field, Integer changeCount) {
+        videoMapper.updateCountInfo(videoId, field, changeCount);
+    }
 }
 
 
