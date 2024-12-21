@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: k-live-gateway
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yml
+        shared-configs:
+          - ${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+    gateway:
+      routes:
+        - id: web
+          uri: lb://k-live-web
+          predicates:
+            - Path=/web/**
+          filters:
+            - StripPrefix=1
+        - id: admin
+          uri: lb://k-live-admin
+          predicates:
+            - Path=/admin/**
+          filters:
+            - StripPrefix=1
+            - AdminFilter
