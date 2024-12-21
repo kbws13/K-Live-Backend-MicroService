@@ -7,6 +7,8 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+import xyz.kbws.common.ErrorCode;
+import xyz.kbws.exception.BusinessException;
 
 /**
  * @author kbws
@@ -20,6 +22,9 @@ public class GlobalRequestFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String rawPath = exchange.getRequest().getURI().getRawPath();
         log.info("请求的路径是: {}", rawPath);
+        if (rawPath.contains("inner")) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_ERROR);
+        }
         return chain.filter(exchange);
     }
 
