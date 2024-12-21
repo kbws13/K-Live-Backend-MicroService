@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.kbws.mapper.VideoPostMapper">
+
+    <resultMap id="BaseResultMap" type="xyz.kbws.model.entity.VideoPost">
+        <id property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="cover" column="cover" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="userId" column="userId" jdbcType="VARCHAR"/>
+        <result property="categoryId" column="categoryId" jdbcType="INTEGER"/>
+        <result property="parentCategoryId" column="parentCategoryId" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="postType" column="postType" jdbcType="TINYINT"/>
+        <result property="originInfo" column="originInfo" jdbcType="VARCHAR"/>
+        <result property="tags" column="tags" jdbcType="VARCHAR"/>
+        <result property="introduction" column="introduction" jdbcType="VARCHAR"/>
+        <result property="interaction" column="interaction" jdbcType="VARCHAR"/>
+        <result property="duration" column="duration" jdbcType="INTEGER"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,cover,name,
+        userId,categoryId,parentCategoryId,
+        status,postType,originInfo,
+        tags,introduction,interaction,
+        duration,createTime,updateTime
+    </sql>
+
+    <select id="loadVideoPost" resultType="xyz.kbws.model.vo.VideoPostVO">
+        SELECT v.*
+        <if test="query.queryCount">
+            ,
+            c.playCount,
+            c.likeCount,
+            c.danmuCount,
+            c.commentCount,
+            c.coinCount,
+            c.collectCount,
+            c.recommendType
+        </if>
+        <if test="query.queryUserInfo">
+            ,
+            u.nickName,
+            u.avatar
+        </if>
+        FROM videoPost v
+        <if test="query.queryCount">
+            LEFT JOIN video c ON c.id = v.id
+        </if>
+        <if test="query.queryUserInfo">
+            LEFT JOIN user u ON u.id = v.id
+        </if>
+        where v.userId = #{userId}
+        <if test="query.status != null">
+            and v.status like CONCAT('%', #{query.videoName}, '%')
+        </if>
+        <if test="query.status != null">
+            and v.status = #{query.status}
+        </if>
+        <if test="query.excludeStatus != null">
+            and v.status not in (<foreach collection="query.excludeStatus" separator="," item="item">#{item}</foreach> )
+        </if>
+        order by v.createTime desc
+        <if test="videoPostQueryRequest.pageSize != null">
+            LIMIT #{query.pageSize} OFFSET #{query.current}
+        </if>
+    </select>
+</mapper>

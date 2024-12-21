@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.kbws.mapper.VideoMapper">
+
+    <resultMap id="BaseResultMap" type="xyz.kbws.model.entity.Video">
+        <id property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="cover" column="cover" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="userId" column="userId" jdbcType="VARCHAR"/>
+        <result property="categoryId" column="categoryId" jdbcType="INTEGER"/>
+        <result property="parentCategoryId" column="parentCategoryId" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="postType" column="postType" jdbcType="TINYINT"/>
+        <result property="originInfo" column="originInfo" jdbcType="VARCHAR"/>
+        <result property="tags" column="tags" jdbcType="VARCHAR"/>
+        <result property="introduction" column="introduction" jdbcType="VARCHAR"/>
+        <result property="interaction" column="interaction" jdbcType="VARCHAR"/>
+        <result property="duration" column="duration" jdbcType="INTEGER"/>
+        <result property="playCount" column="playCount" jdbcType="INTEGER"/>
+        <result property="likeCount" column="likeCount" jdbcType="INTEGER"/>
+        <result property="danmuCount" column="danmuCount" jdbcType="INTEGER"/>
+        <result property="commentCount" column="commentCount" jdbcType="INTEGER"/>
+        <result property="coinCount" column="coinCount" jdbcType="INTEGER"/>
+        <result property="collectCount" column="collectCount" jdbcType="INTEGER"/>
+        <result property="recommendType" column="recommendType" jdbcType="TINYINT"/>
+        <result property="lastPlayTime" column="lastPlayTime" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,cover,name,
+        userId,categoryId,parentCategoryId,
+        status,postType,originInfo,
+        tags,introduction,interaction,
+        duration,playCount,likeCount,
+        danmuCount,commentCount,coinCount,
+        collectCount,recommendType,lastPlayTime,
+        createTime,updateTime
+    </sql>
+
+    <select id="queryList" resultType="xyz.kbws.model.entity.Video">
+        select v.*
+        <if test="videoQueryRequest.queryUserInfo == true">
+            ,
+            u.nickName,
+            u.avatar
+        </if>
+        from video v
+        <if test="videoQueryRequest.queryUserInfo != null">
+            left join user u on u.id = v.userId
+        </if>
+        where recommendType = #{videoQueryRequest.recommendType}
+        <if test="videoQueryRequest.parentCategoryId != null">
+            and parentCategoryId = #{videoQueryRequest.parentCategoryId}
+        </if>
+        <if test="videoQueryRequest.categoryId != null">
+            and categoryId = #{videoQueryRequest.categoryId}
+        </if>
+        <if test="videoQueryRequest.lastPlayHour != null">
+            <![CDATA[ and v.lastPlayTime > date_sub(now(), interval #{videoQueryRequest.lastPlayHour} hour) ]]>
+        </if>
+        <if test="videoQueryRequest.sortField != null">
+            order by #{videoQueryRequest.sortField} #{videoQueryRequest.sortOrder}
+        </if>
+        <if test="videoQueryRequest.pageSize != null">
+            limit #{videoQueryRequest.pageSize} offset #{videoQueryRequest.current}
+        </if>
+    </select>
+
+    <update id="updateCountInfo">
+        update video set ${field} = ${field} + #{changeCount}
+        <if test="field == 'playCount'">
+            , lastPlayTime = now()
+        </if>
+        where id = #{videoId}
+    </update>
+
+    <select id="selectSumCountInfoVO" resultType="xyz.kbws.model.vo.CountInfoVO">
+        select ifnull(sum(playCount), 0) as playCount, ifnull(sum(likeCount), 0) as likeCount
+        from video
+        where userId = #{userId}
+    </select>
+</mapper>

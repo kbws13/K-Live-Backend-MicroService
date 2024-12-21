@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.kbws.mapper.VideoFilePostMapper">
+
+    <resultMap id="BaseResultMap" type="xyz.kbws.model.entity.VideoFilePost">
+        <id property="fileId" column="fileId" jdbcType="VARCHAR"/>
+        <result property="uploadId" column="uploadId" jdbcType="VARCHAR"/>
+        <result property="userId" column="userId" jdbcType="VARCHAR"/>
+        <result property="videoId" column="videoId" jdbcType="VARCHAR"/>
+        <result property="fileIndex" column="fileIndex" jdbcType="INTEGER"/>
+        <result property="fileName" column="fileName" jdbcType="VARCHAR"/>
+        <result property="fileSize" column="fileSize" jdbcType="BIGINT"/>
+        <result property="filePath" column="filePath" jdbcType="VARCHAR"/>
+        <result property="updateType" column="updateType" jdbcType="TINYINT"/>
+        <result property="transferResult" column="transferResult" jdbcType="TINYINT"/>
+        <result property="duration" column="duration" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        fileId,uploadId,userId,
+        videoId,fileIndex,fileName,
+        fileSize,filePath,updateType,
+        transferResult,duration
+    </sql>
+
+    <delete id="deleteBatchByFileId">
+        delete from videoFilePost where fileId in (
+        <foreach collection="fileIdList" separator="," item="item">${item}</foreach>
+        )
+        and userId = #{userId}
+    </delete>
+
+    <select id="sumDuration" resultType="java.lang.Integer">
+        select ifnull(sum(duration), 0)
+        from videoFilePost
+        where videoId = #{videoId}
+    </select>
+</mapper>

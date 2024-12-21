@@ -1,8 +1,10 @@
 package xyz.kbws;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * @author kbws
@@ -10,6 +12,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @description:
  */
 @EnableFeignClients
+@EnableScheduling
+@MapperScan(value = "xyz.kbws.mapper")
 @SpringBootApplication
 public class KLiveWebApplication {
     public static void main(String[] args) {

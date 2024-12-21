@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.kbws.mapper.FocusMapper">
+
+    <resultMap id="BaseResultMap" type="xyz.kbws.model.entity.Focus">
+        <id property="userId" column="userId" jdbcType="VARCHAR"/>
+        <id property="focusUserId" column="focusUserId" jdbcType="VARCHAR"/>
+        <result property="focusTime" column="focusTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        userId,focusUserId,focusTime
+    </sql>
+
+    <sql id="query_condition">
+        <if test="query.userId != null and query.userId != ''">
+            userId = #{query.userId}
+        </if>
+        <if test="query.focusUserId != null and query.focusUserId != ''">
+            and focusUserId = #{query.focusUserId}
+        </if>
+    </sql>
+
+    <select id="selectFansCount" resultType="java.lang.Integer">
+        select count(1)
+        from focus
+        where focusUserId = #{userId}
+    </select>
+
+    <select id="selectFocusCount" resultType="java.lang.Integer">
+        select count(1)
+        from focus
+        where userId = #{userId}
+    </select>
+
+    <select id="selectList" resultType="xyz.kbws.model.vo.FocusVO">
+        select
+        u.*
+        <if test="query.queryType != null">
+            , i.nickName otherNickName, i.id otherUserId, i.personIntroduction otherPersonIntroduction, i.avatar
+            otherAvatar
+            , (select count(1) from focus f where u.userId = f.focusUserId and u.focusUserId = f.userId) focusType
+        </if>
+        from focus u
+        <if test="query.queryType == 0">
+            inner join user i on i.id = u.focusUserId
+        </if>
+        <if test="query.queryType == 1">
+            inner join user i on i.id = u.userId
+        </if>
+        where
+        <include refid="query_condition"/>
+        <if test="query.orderBy != null">
+            order by #{query.orderBy}
+        </if>
+        <if test="videoPostQueryRequest.pageSize != null">
+            LIMIT #{query.pageSize} OFFSET #{query.pageNo}
+        </if>
+    </select>
+</mapper>

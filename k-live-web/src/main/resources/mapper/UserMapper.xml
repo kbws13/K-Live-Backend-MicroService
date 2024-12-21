@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.kbws.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="xyz.kbws.model.entity.User">
+        <id property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="nickName" column="nickName" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="TINYINT"/>
+        <result property="birthday" column="birthday" jdbcType="VARCHAR"/>
+        <result property="school" column="school" jdbcType="VARCHAR"/>
+        <result property="personIntroduction" column="personIntroduction" jdbcType="VARCHAR"/>
+        <result property="lastLoginTime" column="lastLoginTime" jdbcType="TIMESTAMP"/>
+        <result property="lastLoginIp" column="lastLoginIp" jdbcType="VARCHAR"/>
+        <result property="userRole" column="userRole" jdbcType="VARCHAR"/>
+        <result property="noticeInfo" column="noticeInfo" jdbcType="VARCHAR"/>
+        <result property="totalCoinCount" column="totalCoinCount" jdbcType="INTEGER"/>
+        <result property="currentCoinCount" column="currentCoinCount" jdbcType="INTEGER"/>
+        <result property="theme" column="theme" jdbcType="TINYINT"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,nickName,avatar,email,
+        `password`,sex,birthday,
+        school,personIntroduction,lastLoginTime,
+        lastLoginIp,userRole,noticeInfo,
+        totalCoinCount,currentCoinCount,theme,
+        createTime,updateTime,isDelete
+    </sql>
+
+    <update id="updateCoinCount">
+        update user
+        <set>
+            currentCoinCount = currentCoinCount + #{changeCount}
+            <if test="changeCount > 0">
+                , totalCoinCount = totalCoinCount + #{changeCount}
+            </if>
+        </set>
+        where id = #{userId} and currentCoinCount + #{changeCount} >= 0
+    </update>
+</mapper>
