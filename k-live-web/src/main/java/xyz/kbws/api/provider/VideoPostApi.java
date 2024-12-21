@@ -1,13 +1,14 @@
 package xyz.kbws.api.provider;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import xyz.kbws.model.dto.videoPost.VideoPostQueryRequest;
 import xyz.kbws.model.entity.VideoFilePost;
 import xyz.kbws.model.entity.VideoPost;
+import xyz.kbws.model.vo.VideoPostVO;
 import xyz.kbws.service.VideoPostService;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author kbws
@@ -29,5 +30,15 @@ public class VideoPostApi {
     @PostMapping("/selectById")
     public VideoPost selectById(String videoId) {
         return videoPostService.getById(videoId);
+    }
+
+    @PostMapping("/loadVideoPost")
+    List<VideoPostVO> loadVideoPost(@RequestBody VideoPostQueryRequest videoPostQueryRequest, @RequestParam String userId){
+        return videoPostService.loadVideoPost(videoPostQueryRequest, userId);
+    }
+
+    @PostMapping("/auditVideo")
+    void auditVideo(String videoId, Integer status, String reason){
+        videoPostService.auditVideo(videoId, status, reason);
     }
 }

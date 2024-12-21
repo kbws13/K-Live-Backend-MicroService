@@ -2,6 +2,7 @@ package xyz.kbws.api.provider;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.kbws.es.EsComponent;
 import xyz.kbws.model.entity.Video;
@@ -38,5 +39,15 @@ public class VideoApi {
     @PostMapping("/updateDocCount")
     public void updateDocCount(String videoId, SearchOrderTypeEnum searchOrderTypeEnum, Integer changeCount) {
         esComponent.updateDocCount(videoId, searchOrderTypeEnum.getField(), changeCount);
+    }
+
+    @PostMapping("/recommendVideo")
+    Boolean recommendVideo(String videoId) {
+        return videoService.recommendVideo(videoId);
+    }
+
+    @PostMapping("/deleteVideo")
+    void deleteVideo(String videoId, String userId){
+        videoService.deleteVideo(videoId, userId);
     }
 }

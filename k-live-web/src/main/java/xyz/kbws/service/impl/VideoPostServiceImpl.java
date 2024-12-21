@@ -25,6 +25,7 @@ import xyz.kbws.exception.BusinessException;
 import xyz.kbws.mapper.UserMapper;
 import xyz.kbws.mapper.VideoFilePostMapper;
 import xyz.kbws.mapper.VideoPostMapper;
+import xyz.kbws.model.dto.videoPost.VideoPostQueryRequest;
 import xyz.kbws.model.entity.Video;
 import xyz.kbws.model.entity.VideoFile;
 import xyz.kbws.model.entity.VideoFilePost;
@@ -33,6 +34,7 @@ import xyz.kbws.model.enums.VideoFileTransferResultEnum;
 import xyz.kbws.model.enums.VideoFileTypeEnum;
 import xyz.kbws.model.enums.VideoStatusEnum;
 import xyz.kbws.model.vo.UploadingFileVO;
+import xyz.kbws.model.vo.VideoPostVO;
 import xyz.kbws.rabbitmq.MessageProducer;
 import xyz.kbws.redis.RedisComponent;
 import xyz.kbws.service.VideoFilePostService;
@@ -44,10 +46,7 @@ import xyz.kbws.utils.FFmpegUtil;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -70,6 +69,9 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
 
     @Resource
     private VideoFilePostService videoFilePostService;
+
+    @Resource
+    private VideoPostMapper videoPostMapper;
 
     @Resource
     private VideoFilePostMapper videoFilePostMapper;
@@ -244,6 +246,11 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
                 this.update(updateWrapper);
             }
         }
+    }
+
+    @Override
+    public List<VideoPostVO> loadVideoPost(VideoPostQueryRequest videoPostQueryRequest, String userId) {
+        return videoPostMapper.loadVideoPost(videoPostQueryRequest, userId);
     }
 
     @Transactional(rollbackFor = Exception.class)

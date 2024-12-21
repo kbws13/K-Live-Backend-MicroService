@@ -1,8 +1,10 @@
 package xyz.kbws.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import xyz.kbws.model.dto.videoPost.VideoPostQueryRequest;
 import xyz.kbws.model.entity.VideoFilePost;
 import xyz.kbws.model.entity.VideoPost;
+import xyz.kbws.model.vo.VideoPostVO;
 
 import java.util.List;
 
@@ -20,4 +22,6 @@ public interface VideoPostService extends IService<VideoPost> {
     void transferVideoFile(VideoFilePost videoFilePost);
 
     void auditVideo(String videoId, Integer status, String reason);
+
+    List<VideoPostVO> loadVideoPost(VideoPostQueryRequest videoPostQueryRequest, String userId);
 }
