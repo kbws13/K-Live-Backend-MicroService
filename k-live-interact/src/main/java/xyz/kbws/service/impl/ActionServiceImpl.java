@@ -16,9 +16,11 @@ import xyz.kbws.model.entity.Action;
 import xyz.kbws.model.entity.Video;
 import xyz.kbws.model.enums.SearchOrderTypeEnum;
 import xyz.kbws.model.enums.UserActionTypeEnum;
+import xyz.kbws.model.query.ActionQuery;
 import xyz.kbws.service.ActionService;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author fangyuan
@@ -37,6 +39,9 @@ public class ActionServiceImpl extends ServiceImpl<ActionMapper, Action>
 
     @Resource
     private VideoCommentMapper videoCommentMapper;
+
+    @Resource
+    private ActionMapper actionMapper;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -116,6 +121,11 @@ public class ActionServiceImpl extends ServiceImpl<ActionMapper, Action>
                         opposeAction == null ? null : opposeTypeEnum.getField(), opposeChangeCount);
                 break;
         }
+    }
+
+    @Override
+    public List<Action> findList(ActionQuery actionQuery) {
+        return actionMapper.findList(actionQuery);
     }
 }
 

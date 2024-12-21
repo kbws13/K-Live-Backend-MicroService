@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.kbws.mapper.SeriesMapper">
+
+    <resultMap id="BaseResultMap" type="xyz.kbws.model.entity.Series">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="userId" column="userId" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="TINYINT"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMapVide" type="xyz.kbws.model.entity.Series" extends="BaseResultMap">
+        <collection property="videoList" column="id" select="xyz.kbws.mapper.SeriesMapper.selectVideoList"></collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,`name`,`description`,
+        userId,sort,updateTime
+    </sql>
+
+    <select id="selectUserAllSeries" resultType="xyz.kbws.model.entity.Series">
+        select t.*,
+               v.cover
+        from (select s.*,
+                     (select videoId from seriesContent v where v.seriesId = s.id order by s.sort asc limit 1) videoId
+              from series s
+              where s.userId = #{userId}) t
+                 left join video v on v.id = t.videoId
+        order by t.sort asc
+    </select>
+
+    <select id="selectVideoList" resultType="xyz.kbws.model.entity.Video">
+        select v.id,
+               v.name,
+               v.cover,
+               v.playCount,
+               v.createTime
+        from seriesContent sc
+                 inner join video v on sc.videoId = v.id
+        where sc.seriesId = #{id}
+        order by sc.sort asc
+        limit 5
+    </select>
+
+    <select id="selectListWithVideo" resultMap="BaseResultMapVide">
+        select u.*
+        from series u
+        where userId = #{userId}
+        order by sort
+    </select>
+
+    <select id="selectMaxSort" resultType="java.lang.Integer">
+        select ifnull(max(sort), 0)
+        from series u
+        where u.userId = #{userId}
+    </select>
+
+    <update id="changeSort">
+        <foreach collection="seriesList" separator="," item="item">
+            update series set sort = #{item.sort} where userId = #{item.userId} and id = #{item.id}
+        </foreach>
+    </update>
+</mapper>

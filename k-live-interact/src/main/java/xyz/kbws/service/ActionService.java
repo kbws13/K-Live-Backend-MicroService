@@ -2,6 +2,9 @@ package xyz.kbws.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.kbws.model.entity.Action;
+import xyz.kbws.model.query.ActionQuery;
+
+import java.util.List;
 
 /**
  * @author fangyuan
@@ -11,4 +14,6 @@ import xyz.kbws.model.entity.Action;
 public interface ActionService extends IService<Action> {
 
     void saveAction(Action action);
+
+    List<Action> findList(ActionQuery actionQuery);
 }
