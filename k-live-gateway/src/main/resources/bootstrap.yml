@@ -27,3 +27,10 @@ spring:
           filters:
             - StripPrefix=1
             - AdminFilter
+        - id: resource
+          uri: lb://k-live-resource
+          predicates:
+            - Path=/file/**
+          filters:
+            - StripPrefix=1
+            - AdminFilter
