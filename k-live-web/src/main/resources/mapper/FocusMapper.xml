@@ -11,7 +11,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        userId,focusUserId,focusTime
+        userId
+        ,focusUserId,focusTime
     </sql>
 
     <sql id="query_condition">

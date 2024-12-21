@@ -18,7 +18,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,`name`,`description`,
+        id
+        ,`name`,`description`,
         userId,sort,updateTime
     </sql>
 
@@ -26,10 +27,13 @@
         select t.*,
                v.cover
         from (select s.*,
-                     (select videoId from seriesContent v where v.seriesId = s.id order by s.sort asc limit 1) videoId
-              from series s
-              where s.userId = #{userId}) t
-                 left join video v on v.id = t.videoId
+                     (select videoId
+                      from seriesContent v
+                      where v.seriesId = s.id
+                      order by s.sort asc limit 1) videoId from series s
+        where s.userId = #{userId}) t
+            left join video v
+        on v.id = t.videoId
         order by t.sort asc
     </select>
 
@@ -42,8 +46,7 @@
         from seriesContent sc
                  inner join video v on sc.videoId = v.id
         where sc.seriesId = #{id}
-        order by sc.sort asc
-        limit 5
+        order by sc.sort asc limit 5
     </select>
 
     <select id="selectListWithVideo" resultMap="BaseResultMapVide">

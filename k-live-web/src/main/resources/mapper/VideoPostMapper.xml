@@ -23,7 +23,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,cover,name,
+        id
+        ,cover,name,
         userId,categoryId,parentCategoryId,
         status,postType,originInfo,
         tags,introduction,interaction,

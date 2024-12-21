@@ -36,7 +36,7 @@ public class VideoApi {
     }
 
     @PostMapping("/updateDocCount")
-    public void updateDocCount(String videoId, SearchOrderTypeEnum searchOrderTypeEnum, Integer changeCount){
+    public void updateDocCount(String videoId, SearchOrderTypeEnum searchOrderTypeEnum, Integer changeCount) {
         esComponent.updateDocCount(videoId, searchOrderTypeEnum.getField(), changeCount);
     }
 }

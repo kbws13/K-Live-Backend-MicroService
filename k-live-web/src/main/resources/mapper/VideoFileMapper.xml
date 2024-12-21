@@ -16,7 +16,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        fileId,userId,videoId,
+        fileId
+        ,userId,videoId,
         fileIndex,fileName,fileSize,
         filePath,duration
     </sql>

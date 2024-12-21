@@ -12,7 +12,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        statisticDate,userId,dataType,
+        statisticDate
+        ,userId,dataType,
         count
     </sql>
 

@@ -16,7 +16,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,userId,videoId,
+        id
+        ,userId,videoId,
         type,sendUserId,readType,
         createTime,extendJson
     </sql>

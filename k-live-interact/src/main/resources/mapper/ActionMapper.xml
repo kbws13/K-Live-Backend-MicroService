@@ -16,7 +16,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,videoId,videoUserId,
+        id
+        ,videoId,videoUserId,
         commentId,actionType,count,
         userId,actionTime
     </sql>

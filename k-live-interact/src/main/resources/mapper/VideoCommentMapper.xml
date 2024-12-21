@@ -25,7 +25,10 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        v.id,parentCommentId,videoId,
+        v
+        .
+        id
+        ,parentCommentId,videoId,
         videoUserId,content,imgPath,
         userId,replyUserId,topType,
         postTime,likeCount,hateCount

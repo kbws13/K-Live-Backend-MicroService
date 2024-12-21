@@ -12,7 +12,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        seriesId,videoId,userId,sort
+        seriesId
+        ,videoId,userId,sort
     </sql>
 
     <select id="selectMaxSort" resultType="java.lang.Integer">

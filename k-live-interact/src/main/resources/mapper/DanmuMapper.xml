@@ -17,7 +17,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,videoId,fileId,
+        id
+        ,videoId,fileId,
         userId,postTime,text,
         mode,color,time
     </sql>

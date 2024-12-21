@@ -19,7 +19,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        fileId,uploadId,userId,
+        fileId
+        ,uploadId,userId,
         videoId,fileIndex,fileName,
         fileSize,filePath,updateType,
         transferResult,duration

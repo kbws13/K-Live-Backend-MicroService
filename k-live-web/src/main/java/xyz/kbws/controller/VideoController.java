@@ -17,7 +17,6 @@ import xyz.kbws.model.dto.video.VideoReportRequest;
 import xyz.kbws.model.entity.Video;
 import xyz.kbws.model.entity.VideoFile;
 import xyz.kbws.model.enums.SearchOrderTypeEnum;
-import xyz.kbws.model.enums.UserActionTypeEnum;
 import xyz.kbws.model.enums.VideoRecommendTypeEnum;
 import xyz.kbws.model.vo.UserVO;
 import xyz.kbws.model.vo.VideoInfoResultVO;
@@ -28,8 +27,6 @@ import xyz.kbws.service.VideoService;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotEmpty;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 

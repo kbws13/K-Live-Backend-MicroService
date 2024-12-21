@@ -2,7 +2,6 @@ package xyz.kbws.api.provider;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.kbws.model.entity.User;
 import xyz.kbws.service.UserService;
@@ -27,7 +26,7 @@ public class UserApi {
     }
 
     @PostMapping("/updateCountInfo")
-    public Integer updateCoinCount(String userId, Integer changeCount){
+    public Integer updateCoinCount(String userId, Integer changeCount) {
         return userService.updateCoinCount(userId, changeCount);
     }
 }
