@@ -1,9 +1,10 @@
 package xyz.kbws.api.provider;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.web.bind.annotation.*;
+import xyz.kbws.model.dto.user.UserChangeStatusRequest;
+import xyz.kbws.model.dto.user.UserLoadRequest;
 import xyz.kbws.model.entity.User;
 import xyz.kbws.service.UserService;
 
@@ -34,5 +35,19 @@ public class UserApi {
     @GetMapping("/count")
     public Integer count() {
         return Math.toIntExact(userService.count());
+    }
+
+    @PostMapping("/page")
+    Page<User> page(@RequestBody UserLoadRequest userLoadRequest) {
+        long current = userLoadRequest.getCurrent();
+        long pageSize = userLoadRequest.getPageSize();
+        userLoadRequest.setSortField("createTime");
+        QueryWrapper<User> queryWrapper = userService.getQueryWrapper(userLoadRequest);
+        return userService.page(new Page<>(current, pageSize), queryWrapper);
+    }
+
+    @PostMapping("/changeStatus")
+    Boolean changeStatus(@RequestBody UserChangeStatusRequest userChangeStatusRequest) {
+        return userService.changeStatus(userChangeStatusRequest);
     }
 }

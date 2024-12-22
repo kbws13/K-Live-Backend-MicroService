@@ -133,6 +133,10 @@ public class FileController {
     @AuthCheck
     @PostMapping("/uploadImage")
     public BaseResponse<String> uploadImage(@NotNull MultipartFile file, @NotNull Boolean createThumbnail) throws IOException {
+        return ResultUtils.success(uploadImageInner(file, createThumbnail));
+    }
+
+    public String uploadImageInner(MultipartFile file, Boolean createThumbnail) throws IOException {
         String date = DateUtil.format(DateUtil.date(), "yyyyMMdd");
         String folder = appConfig.getProjectFolder() + FileConstant.FILE_FOLDER + FileConstant.FILE_COVER + date;
         File folderFile = new File(folder);
@@ -148,8 +152,7 @@ public class FileController {
             // 生成缩略图
             fFmpegUtil.createImageThumbnail(filePath);
         }
-        String res = FileConstant.FILE_COVER + date + "/" + realFileName;
-        return ResultUtils.success(res);
+        return FileConstant.FILE_COVER + date + "/" + realFileName;
     }
 
     @ApiOperation(value = "获取视频 m3u8 文件")
