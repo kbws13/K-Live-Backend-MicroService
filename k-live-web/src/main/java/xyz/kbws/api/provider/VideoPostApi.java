@@ -33,12 +33,12 @@ public class VideoPostApi {
     }
 
     @PostMapping("/loadVideoPost")
-    List<VideoPostVO> loadVideoPost(@RequestBody VideoPostQueryRequest videoPostQueryRequest, @RequestParam String userId){
+    List<VideoPostVO> loadVideoPost(@RequestBody VideoPostQueryRequest videoPostQueryRequest, @RequestParam String userId) {
         return videoPostService.loadVideoPost(videoPostQueryRequest, userId);
     }
 
     @PostMapping("/auditVideo")
-    void auditVideo(String videoId, Integer status, String reason){
+    void auditVideo(String videoId, Integer status, String reason) {
         videoPostService.auditVideo(videoId, status, reason);
     }
 }

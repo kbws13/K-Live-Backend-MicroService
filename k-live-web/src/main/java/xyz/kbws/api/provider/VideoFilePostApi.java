@@ -23,7 +23,7 @@ public class VideoFilePostApi {
     private VideoFilePostService videoFilePostService;
 
     @PostMapping("/selectVideoFileList")
-    List<VideoFilePost> selectVideoFileList(QueryWrapper<VideoFilePost> queryWrapper){
+    List<VideoFilePost> selectVideoFileList(QueryWrapper<VideoFilePost> queryWrapper) {
         return videoFilePostService.list(queryWrapper);
     }
 }

@@ -4,8 +4,8 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import xyz.kbws.api.consumer.InteractClient;
 import xyz.kbws.common.ErrorCode;
 import xyz.kbws.config.SystemSetting;
@@ -64,7 +64,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
 
     private ExecutorService executorService = Executors.newFixedThreadPool(10);
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void deleteVideo(String videoId, String userId) {
         VideoPost videoPost = videoPostService.getById(videoId);
@@ -100,7 +100,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
         });
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void changeInteraction(String videoId, String userId, String interaction) {
         Video video = new Video();

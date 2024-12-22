@@ -4,8 +4,8 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import xyz.kbws.constant.RedisConstant;
 import xyz.kbws.mapper.FocusMapper;
 import xyz.kbws.mapper.StatisticInfoMapper;
@@ -49,7 +49,7 @@ public class StatisticInfoServiceImpl extends ServiceImpl<StatisticInfoMapper, S
     @Resource
     private RedisComponent redisComponent;
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void syncStatisticInfoData() {
         List<StatisticInfo> statisticInfoList = new ArrayList<>();

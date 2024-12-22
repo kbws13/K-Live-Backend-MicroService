@@ -8,11 +8,11 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import xyz.kbws.common.ErrorCode;
 import xyz.kbws.config.AppConfig;
 import xyz.kbws.config.SystemSetting;
@@ -46,7 +46,10 @@ import xyz.kbws.utils.FFmpegUtil;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.RandomAccessFile;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -94,7 +97,7 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
     @Resource
     private AppConfig appConfig;
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void addVideoPost(VideoPost videoPost, List<VideoFilePost> videoFilePosts) {
         if (videoFilePosts.size() > redisComponent.getSystemSetting().getVideoCount()) {
@@ -124,7 +127,7 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
         messageProducer.sendMessage(MqConstant.FILE_EXCHANGE_NAME, MqConstant.TRANSFER_VIDEO_ROOTING_KEY, jsonArray.toString());
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void updateVideoPost(VideoPost videoPost, List<VideoFilePost> videoFilePosts) {
         if (videoFilePosts.size() > redisComponent.getSystemSetting().getVideoCount()) {
@@ -253,7 +256,7 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
         return videoPostMapper.loadVideoPost(videoPostQueryRequest, userId);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void auditVideo(String videoId, Integer status, String reason) {
         VideoStatusEnum videoStatusEnum = VideoStatusEnum.getEnumByValue(status);

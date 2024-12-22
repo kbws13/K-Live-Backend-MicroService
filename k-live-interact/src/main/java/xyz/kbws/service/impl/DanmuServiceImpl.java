@@ -1,8 +1,8 @@
 package xyz.kbws.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import xyz.kbws.api.consumer.VideoClient;
 import xyz.kbws.common.ErrorCode;
 import xyz.kbws.constant.UserConstant;
@@ -33,7 +33,7 @@ public class DanmuServiceImpl extends ServiceImpl<DanmuMapper, Danmu>
     @Resource
     private VideoClient videoClient;
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void saveDanmu(Danmu danmu) {
         Video video = videoClient.selectById(danmu.getVideoId());

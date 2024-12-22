@@ -66,14 +66,17 @@ public class MessageInterceptor {
                 }
                 messageService.saveMessage(actionDoRequest.getVideoId(), userVO == null ? null : userVO.getId(),
                         messageTypeEnum, null, null);
+                break;
             case COMMENT:
                 CommentAddRequest commentAddRequest = (CommentAddRequest) arguments[0];
                 messageService.saveMessage(commentAddRequest.getVideoId(), userVO == null ? null : userVO.getId(),
                         messageTypeEnum, commentAddRequest.getContent(), commentAddRequest.getReplyCommentId());
+                break;
             case SYSTEM:
                 VideoPostAuditRequest videoPostAuditRequest = (VideoPostAuditRequest) arguments[0];
                 messageService.saveMessage(videoPostAuditRequest.getVideoId(), userVO == null ? null : userVO.getId(),
                         messageTypeEnum, videoPostAuditRequest.getReason(), null);
+                break;
         }
     }
 }

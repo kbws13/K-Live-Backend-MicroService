@@ -3,8 +3,8 @@ package xyz.kbws.service.impl;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import xyz.kbws.api.consumer.UserClient;
 import xyz.kbws.api.consumer.VideoClient;
 import xyz.kbws.common.ErrorCode;
@@ -40,6 +40,7 @@ public class VideoCommentServiceImpl extends ServiceImpl<VideoCommentMapper, Vid
     @Resource
     private UserClient userClient;
 
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public VideoComment addComment(VideoComment videoComment, Integer replyCommentId) {
         Video video = videoClient.selectById(videoComment.getVideoId());
@@ -82,7 +83,7 @@ public class VideoCommentServiceImpl extends ServiceImpl<VideoCommentMapper, Vid
         return videoCommentMapper.selectList(query);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public Boolean topComment(Integer commentId, String userId) {
         this.cancelTopComment(commentId, userId);

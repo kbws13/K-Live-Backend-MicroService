@@ -12,7 +12,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        userId,videoId,fileIndex,
+        userId
+        ,videoId,fileIndex,
         lastUpdateTime
     </sql>
 
