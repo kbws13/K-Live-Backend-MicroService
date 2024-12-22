@@ -10,7 +10,7 @@ import xyz.kbws.model.entity.VideoFile;
  * @date 2024/12/21
  * @description:
  */
-@FeignClient(name = "k-live-web")
+@FeignClient(name = "k-live-web", contextId = "videoFileClient")
 public interface VideoFileClient {
 
     @PostMapping("/inner/videoFile/getVideoFileById")

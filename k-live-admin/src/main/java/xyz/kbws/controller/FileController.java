@@ -43,14 +43,14 @@ public class FileController {
     }
 
     @GetMapping("/videoResource/{fileId}")
-    public void videoResource(@PathVariable("fileId") String fileId, HttpServletRequest request, HttpServletResponse response) {
-        Response resource = resourceClient.videoResource(fileId, request, response);
+    public void videoResource(@PathVariable("fileId") String fileId, HttpServletResponse response) {
+        Response resource = resourceClient.videoResource(fileId);
         ResponseUtil.coverFileResponse2Stream(response, resource);
     }
 
     @GetMapping("/videoResourceTS/{fileId}/{ts}")
     public void videoResourceTS(@PathVariable("fileId") String fileId, @PathVariable("ts") String ts, HttpServletResponse response) {
-        Response resource = resourceClient.videoResourceTS(fileId, ts, response);
+        Response resource = resourceClient.videoResourceTS(fileId, ts);
         ResponseUtil.coverFileResponse2Stream(response, resource);
     }
 }

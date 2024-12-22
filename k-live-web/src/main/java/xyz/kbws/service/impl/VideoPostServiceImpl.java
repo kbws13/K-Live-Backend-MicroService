@@ -1,7 +1,6 @@
 package xyz.kbws.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
@@ -14,10 +13,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import xyz.kbws.common.ErrorCode;
-import xyz.kbws.config.AppConfig;
 import xyz.kbws.config.SystemSetting;
 import xyz.kbws.constant.CommonConstant;
-import xyz.kbws.constant.FileConstant;
 import xyz.kbws.constant.MqConstant;
 import xyz.kbws.constant.UserConstant;
 import xyz.kbws.es.EsComponent;
@@ -33,7 +30,6 @@ import xyz.kbws.model.entity.VideoPost;
 import xyz.kbws.model.enums.VideoFileTransferResultEnum;
 import xyz.kbws.model.enums.VideoFileTypeEnum;
 import xyz.kbws.model.enums.VideoStatusEnum;
-import xyz.kbws.model.vo.UploadingFileVO;
 import xyz.kbws.model.vo.VideoPostVO;
 import xyz.kbws.rabbitmq.MessageProducer;
 import xyz.kbws.redis.RedisComponent;
@@ -41,11 +37,8 @@ import xyz.kbws.service.VideoFilePostService;
 import xyz.kbws.service.VideoFileService;
 import xyz.kbws.service.VideoPostService;
 import xyz.kbws.service.VideoService;
-import xyz.kbws.utils.FFmpegUtil;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -90,12 +83,6 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
 
     @Resource
     private MessageProducer messageProducer;
-
-    @Resource
-    private FFmpegUtil fFmpegUtil;
-
-    @Resource
-    private AppConfig appConfig;
 
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
@@ -204,50 +191,25 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
 
     @Override
     public void transferVideoFile(VideoFilePost videoFilePost) {
-        try {
-            UploadingFileVO uploadVideoFile = redisComponent.getUploadVideoFile(videoFilePost.getUserId(), videoFilePost.getUploadId());
-            String tempFilePath = appConfig.getProjectFolder() + FileConstant.FILE_FOLDER + FileConstant.FILE_FOLDER_TEMP + uploadVideoFile.getFilePath();
-            String targetFilePath = appConfig.getProjectFolder() + FileConstant.FILE_FOLDER + FileConstant.FILE_VIDEO + uploadVideoFile.getFilePath();
-            FileUtil.copy(tempFilePath, targetFilePath, false);
-            // 删除临时目录
-            FileUtil.del(tempFilePath);
-            // 删除 Redis 记录
-            redisComponent.deleteUploadVideoFile(videoFilePost.getUserId(), videoFilePost.getUploadId());
-            // 合并文件
-            String completeVideo = targetFilePath + FileConstant.TEMP_VIDEO_NAME;
-            this.union(targetFilePath, completeVideo, true);
-            // 获取播放时长
-            Integer duration = fFmpegUtil.getVideoDuration(completeVideo);
-            videoFilePost.setDuration(duration);
-            videoFilePost.setFileSize(new File(completeVideo).length());
-            videoFilePost.setFilePath(FileConstant.FILE_VIDEO + uploadVideoFile.getFilePath());
-            videoFilePost.setTransferResult(VideoFileTransferResultEnum.SUCCESS.getValue());
-            // 将视频转成 TS 分片
-            this.coverVideo2TS(completeVideo);
-        } catch (Exception e) {
-            log.error("文件转码失败: {}", e.getMessage());
-            videoFilePost.setTransferResult(VideoFileTransferResultEnum.FAIL.getValue());
-        } finally {
-            videoFilePostMapper.updateById(videoFilePost);
-            // 查询是否有转码失败的
-            QueryWrapper<VideoFilePost> queryWrapper = new QueryWrapper<>();
-            UpdateWrapper<VideoPost> updateWrapper = new UpdateWrapper<>();
-            queryWrapper.eq("videoId", videoFilePost.getVideoId());
-            queryWrapper.eq("transferResult", VideoFileTransferResultEnum.FAIL.getValue());
-            long failCount = videoFilePostService.count(queryWrapper);
-            if (failCount > 0) {
-                updateWrapper.eq("id", videoFilePost.getVideoId());
-                updateWrapper.set("status", VideoStatusEnum.STATUS1.getValue());
-                this.update(updateWrapper);
-            }
-            queryWrapper.eq("transferResult", VideoFileTransferResultEnum.TRANSFER.getValue());
-            long transferCount = videoFilePostService.count(queryWrapper);
-            if (transferCount == 0) {
-                Integer duration = videoFilePostMapper.sumDuration(videoFilePost.getVideoId());
-                updateWrapper.set("duration", duration);
-                updateWrapper.set("status", VideoStatusEnum.STATUS2.getValue());
-                this.update(updateWrapper);
-            }
+        videoFilePostMapper.updateById(videoFilePost);
+        // 查询是否有转码失败的
+        QueryWrapper<VideoFilePost> queryWrapper = new QueryWrapper<>();
+        UpdateWrapper<VideoPost> updateWrapper = new UpdateWrapper<>();
+        queryWrapper.eq("videoId", videoFilePost.getVideoId());
+        queryWrapper.eq("transferResult", VideoFileTransferResultEnum.FAIL.getValue());
+        long failCount = videoFilePostService.count(queryWrapper);
+        if (failCount > 0) {
+            updateWrapper.eq("id", videoFilePost.getVideoId());
+            updateWrapper.set("status", VideoStatusEnum.STATUS1.getValue());
+            this.update(updateWrapper);
+        }
+        queryWrapper.eq("transferResult", VideoFileTransferResultEnum.TRANSFER.getValue());
+        long transferCount = videoFilePostService.count(queryWrapper);
+        if (transferCount == 0) {
+            Integer duration = videoFilePostMapper.sumDuration(videoFilePost.getVideoId());
+            updateWrapper.set("duration", duration);
+            updateWrapper.set("status", VideoStatusEnum.STATUS2.getValue());
+            this.update(updateWrapper);
         }
     }
 
@@ -310,53 +272,6 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
         }
         // 保存信息到 ES
         esComponent.saveDoc(dbVideo);
-    }
-
-    private void coverVideo2TS(String completeVideo) {
-        File voideFile = new File(completeVideo);
-        File tsFolder = voideFile.getParentFile();
-        String codec = fFmpegUtil.getVideoCodec(completeVideo);
-        if (FileConstant.VIDEO_CODE_HEVC.equals(codec)) {
-            String tempFileName = completeVideo + FileConstant.VIDEO_TEMP_FILE_SUFFIX;
-            new File(completeVideo).renameTo(new File(tempFileName));
-            fFmpegUtil.coverHevc2Mp4(tempFileName, completeVideo);
-            FileUtil.del(tempFileName);
-        }
-        fFmpegUtil.coverVideo2TS(tsFolder, completeVideo);
-        FileUtil.del(voideFile);
-    }
-
-    private void union(String dirPath, String toFilePath, Boolean delSource) {
-        File dir = new File(dirPath);
-        if (!dir.exists()) {
-            throw new BusinessException(ErrorCode.OPERATION_ERROR, "目录不存在");
-        }
-        File[] fileList = dir.listFiles();
-        File targetFile = new File(toFilePath);
-        try (RandomAccessFile writeFile = new RandomAccessFile(targetFile, "rw")) {
-            byte[] bytes = new byte[1024 * 10];
-            for (int i = 0; i < fileList.length; i++) {
-                int len = -1;
-                // 创建读块文件的对象
-                File chunkFile = new File(dirPath + File.separator + i);
-                try (RandomAccessFile readFile = new RandomAccessFile(chunkFile, "r")) {
-                    while ((len = readFile.read(bytes)) != -1) {
-                        writeFile.write(bytes, 0, len);
-                    }
-                } catch (Exception e) {
-                    log.error("合并分片失败: {}", e.getMessage());
-                    throw new BusinessException(ErrorCode.OPERATION_ERROR, "合并分片失败" + e.getMessage());
-                }
-            }
-        } catch (Exception e) {
-            throw new BusinessException(ErrorCode.OPERATION_ERROR, "合并文件 " + dirPath + " 出错了");
-        } finally {
-            if (delSource) {
-                for (int i = 0; i < fileList.length; i++) {
-                    fileList[i].delete();
-                }
-            }
-        }
     }
 
     private Boolean changeVideo(VideoPost videoPost) {

@@ -3,6 +3,7 @@ package xyz.kbws.api.provider;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.kbws.es.EsComponent;
 import xyz.kbws.model.entity.Video;
@@ -54,5 +55,10 @@ public class VideoApi {
     @PostMapping("/count")
     public Long count(QueryWrapper<Video> videoQueryWrapper) {
         return videoService.count(videoQueryWrapper);
+    }
+
+    @PostMapping("/addPlayCount")
+    void addPlayCount(@RequestParam String videoId) {
+        videoService.addPlayCount(videoId);
     }
 }

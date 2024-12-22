@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -24,9 +23,9 @@ public interface ResourceClient {
     Response getResource(@RequestParam String sourceName, HttpServletResponse response);
 
     @GetMapping("/inner/file/videoResource/{fileId}")
-    Response videoResource(@PathVariable("fileId") String fileId, HttpServletRequest request, HttpServletResponse response);
+    Response videoResource(@PathVariable("fileId") String fileId);
 
     @GetMapping("/inner/file/videoResourceTS/{fileId}/{ts}")
-    Response videoResourceTS(@PathVariable("fileId") String fileId, @PathVariable("ts") String ts, HttpServletResponse response);
+    Response videoResourceTS(@PathVariable("fileId") String fileId, @PathVariable("ts") String ts);
 
 }

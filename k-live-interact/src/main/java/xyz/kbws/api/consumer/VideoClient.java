@@ -22,4 +22,7 @@ public interface VideoClient {
 
     @PostMapping("/inner/video/updateDocCount")
     void updateDocCount(@RequestParam String videoId, @RequestParam SearchOrderTypeEnum searchOrderTypeEnum, @RequestParam Integer changeCount);
+
+    @PostMapping("/inner/video/addPlayCount")
+    void addPlayCount(@RequestParam String videoId);
 }
