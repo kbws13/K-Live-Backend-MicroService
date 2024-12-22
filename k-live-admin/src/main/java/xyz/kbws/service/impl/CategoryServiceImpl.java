@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import xyz.kbws.api.consumer.WebClient;
 import xyz.kbws.common.DeleteRequest;
 import xyz.kbws.common.ErrorCode;
 import xyz.kbws.constant.UserConstant;
@@ -35,8 +36,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
     @Resource
     private CategoryMapper categoryMapper;
 
-    //@Resource
-    //private VideoService videoService;
+    @Resource
+    private WebClient webClient;
 
     @Resource
     private RedisComponent redisComponent;
@@ -110,9 +111,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
                 .eq("categoryId", categoryId)
                 .or()
                 .eq("parentCategoryId", categoryId);
-        // TODO Web 模块提供获取分类下视频数量
-        long count = 0;
-        //long count = videoService.count(videoQueryWrapper);
+        // Web 模块提供获取分类下视频数量
+        long count = webClient.count(videoQueryWrapper);
         if (count > 0) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "分类下有视频，无法删除");
         }

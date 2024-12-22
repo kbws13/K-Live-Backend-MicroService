@@ -1,5 +1,6 @@
 package xyz.kbws.api.provider;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,5 +50,10 @@ public class VideoApi {
     @PostMapping("/deleteVideo")
     void deleteVideo(String videoId, String userId){
         videoService.deleteVideo(videoId, userId);
+    }
+
+    @PostMapping("/count")
+    public Long count(QueryWrapper<Video> videoQueryWrapper) {
+        return videoService.count(videoQueryWrapper);
     }
 }

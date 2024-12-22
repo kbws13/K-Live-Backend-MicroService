@@ -12,6 +12,7 @@ import xyz.kbws.model.dto.user.UserLoadRequest;
 import xyz.kbws.model.dto.videoPost.VideoPostQueryRequest;
 import xyz.kbws.model.entity.StatisticInfo;
 import xyz.kbws.model.entity.User;
+import xyz.kbws.model.entity.Video;
 import xyz.kbws.model.entity.VideoFilePost;
 import xyz.kbws.model.vo.VideoPostVO;
 
@@ -25,6 +26,9 @@ import java.util.Map;
  */
 @FeignClient(name = "k-live-web", contextId = "webClient")
 public interface WebClient {
+
+    @PostMapping("/inner/video/count")
+    Long count(@RequestBody QueryWrapper<Video> videoQueryWrapper);
 
     @PostMapping("/inner/video/recommendVideo")
     Boolean recommendVideo(@RequestParam String videoId);

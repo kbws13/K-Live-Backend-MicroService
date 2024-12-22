@@ -1,5 +1,6 @@
 package xyz.kbws.api.provider;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,5 +31,10 @@ public class VideoCommentApi {
     @PostMapping("deleteComment")
     Boolean deleteComment(Integer commentId, String userId) {
         return videoCommentService.deleteComment(commentId, null);
+    }
+
+    @PostMapping("/deleteVideoComment")
+    void deleteVideoComment(QueryWrapper<VideoComment> videoCommentQueryWrapper) {
+        videoCommentService.remove(videoCommentQueryWrapper);
     }
 }

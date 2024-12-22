@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
+import xyz.kbws.api.consumer.InteractClient;
 import xyz.kbws.common.BaseResponse;
 import xyz.kbws.common.ErrorCode;
 import xyz.kbws.common.ResultUtils;
@@ -14,9 +15,11 @@ import xyz.kbws.exception.BusinessException;
 import xyz.kbws.mapper.VideoMapper;
 import xyz.kbws.model.dto.video.VideoQueryRequest;
 import xyz.kbws.model.dto.video.VideoReportRequest;
+import xyz.kbws.model.entity.Action;
 import xyz.kbws.model.entity.Video;
 import xyz.kbws.model.entity.VideoFile;
 import xyz.kbws.model.enums.SearchOrderTypeEnum;
+import xyz.kbws.model.enums.UserActionTypeEnum;
 import xyz.kbws.model.enums.VideoRecommendTypeEnum;
 import xyz.kbws.model.vo.UserVO;
 import xyz.kbws.model.vo.VideoInfoResultVO;
@@ -27,6 +30,8 @@ import xyz.kbws.service.VideoService;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,8 +50,8 @@ public class VideoController {
     @Resource
     private VideoFileService videoFileService;
 
-    //@Resource
-    //private ActionService actionService;
+    @Resource
+    private InteractClient interactClient;
 
     @Resource
     private VideoMapper videoMapper;
@@ -92,21 +97,21 @@ public class VideoController {
         if (video == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "该视频不存在");
         }
-        // TODO 调用互动模块获取用户点赞、投币、收藏
-        //List<Action> list = new ArrayList<>();
+        // 调用互动模块获取用户点赞、投币、收藏
+        List<Action> list = new ArrayList<>();
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
         if (userVO != null) {
-            //QueryWrapper<Action> queryWrapper = new QueryWrapper<>();
-            //List<Integer> types = Arrays.asList(UserActionTypeEnum.VIDEO_LIKE.getValue(), UserActionTypeEnum.VIDEO_COLLECT.getValue(), UserActionTypeEnum.VIDEO_COIN.getValue());
-            //queryWrapper.eq("videoId", videoId)
-            //        .eq("userId", userVO.getId())
-            //        .in("actionType", types);
-            //list = actionService.list(queryWrapper);
+            QueryWrapper<Action> queryWrapper = new QueryWrapper<>();
+            List<Integer> types = Arrays.asList(UserActionTypeEnum.VIDEO_LIKE.getValue(), UserActionTypeEnum.VIDEO_COLLECT.getValue(), UserActionTypeEnum.VIDEO_COIN.getValue());
+            queryWrapper.eq("videoId", videoId)
+                    .eq("userId", userVO.getId())
+                    .in("actionType", types);
+            list = interactClient.list(queryWrapper);
         }
         VideoInfoResultVO videoInfoResultVO = new VideoInfoResultVO();
         videoInfoResultVO.setVideo(video);
-        //videoInfoResultVO.setUserActionList(list);
+        videoInfoResultVO.setUserActionList(list);
         return ResultUtils.success(videoInfoResultVO);
     }
 

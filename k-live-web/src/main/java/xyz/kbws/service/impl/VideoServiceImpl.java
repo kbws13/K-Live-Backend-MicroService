@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import xyz.kbws.api.consumer.InteractClient;
 import xyz.kbws.common.ErrorCode;
 import xyz.kbws.config.SystemSetting;
 import xyz.kbws.constant.MqConstant;
@@ -14,9 +15,7 @@ import xyz.kbws.exception.BusinessException;
 import xyz.kbws.mapper.UserMapper;
 import xyz.kbws.mapper.VideoMapper;
 import xyz.kbws.model.dto.video.VideoQueryRequest;
-import xyz.kbws.model.entity.Video;
-import xyz.kbws.model.entity.VideoFilePost;
-import xyz.kbws.model.entity.VideoPost;
+import xyz.kbws.model.entity.*;
 import xyz.kbws.model.enums.UserActionTypeEnum;
 import xyz.kbws.model.enums.VideoRecommendTypeEnum;
 import xyz.kbws.rabbitmq.MessageProducer;
@@ -45,11 +44,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
     @Resource
     private VideoFilePostService videoFilePostService;
 
-    //@Resource
-    //private DanmuService danmuService;
-
-    //@Resource
-    //private VideoCommentService videoCommentService;
+    @Resource
+    private InteractClient interactClient;
 
     @Resource
     private VideoMapper videoMapper;
@@ -87,15 +83,14 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
             QueryWrapper<VideoFilePost> videoFilePostQueryWrapper = new QueryWrapper<>();
             videoFilePostQueryWrapper.eq("videoId", videoId);
             videoFilePostService.remove(videoFilePostQueryWrapper);
-            // TODO 调用互动模块删除弹幕和评论
             // 删除弹幕
-            //QueryWrapper<Danmu> danmuQueryWrapper = new QueryWrapper<>();
-            //danmuQueryWrapper.eq("videoId", videoId);
-            //danmuService.remove(danmuQueryWrapper);
+            QueryWrapper<Danmu> danmuQueryWrapper = new QueryWrapper<>();
+            danmuQueryWrapper.eq("videoId", videoId);
+            interactClient.deleteDanmu(danmuQueryWrapper);
             // 删除评论
-            //QueryWrapper<VideoComment> videoCommentQueryWrapper = new QueryWrapper<>();
-            //videoCommentQueryWrapper.eq("videoId", videoId);
-            //videoCommentService.remove(videoCommentQueryWrapper);
+            QueryWrapper<VideoComment> videoCommentQueryWrapper = new QueryWrapper<>();
+            videoCommentQueryWrapper.eq("videoId", videoId);
+            interactClient.deleteVideoComment(videoCommentQueryWrapper);
 
             List<VideoFilePost> videoFilePostList = videoFilePostService.list(videoFilePostQueryWrapper);
             for (VideoFilePost videoFilePost : videoFilePostList) {

@@ -1,5 +1,6 @@
 package xyz.kbws.api.provider;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.web.bind.annotation.*;
 import xyz.kbws.model.entity.Danmu;
 import xyz.kbws.model.query.DanmuQuery;
@@ -28,5 +29,10 @@ public class DanmuApi {
     @PostMapping("/deleteDanmu")
     void deleteDanmu(String userId, Integer danmuId) {
         danmuService.deleteDanmu(userId, danmuId);
+    }
+
+    @PostMapping("/deleteVideoDanmu")
+    void deleteVideoDanmu(QueryWrapper<Danmu> danmuQueryWrapper) {
+        danmuService.remove(danmuQueryWrapper);
     }
 }
