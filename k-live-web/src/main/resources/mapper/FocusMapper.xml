@@ -36,7 +36,7 @@
         where userId = #{userId}
     </select>
 
-    <select id="selectList" resultType="xyz.kbws.model.vo.FocusVO">
+    <select id="selectListByQuery" resultType="xyz.kbws.model.vo.FocusVO">
         select
         u.*
         <if test="query.queryType != null">

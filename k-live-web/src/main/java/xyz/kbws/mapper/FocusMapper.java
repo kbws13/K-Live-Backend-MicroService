@@ -20,7 +20,7 @@ public interface FocusMapper extends BaseMapper<Focus> {
 
     Integer selectFocusCount(@Param("userId") String userId);
 
-    List<FocusVO> selectList(@Param("query") FocusQuery query);
+    List<FocusVO> selectListByQuery(@Param("query") FocusQuery query);
 }
 
 

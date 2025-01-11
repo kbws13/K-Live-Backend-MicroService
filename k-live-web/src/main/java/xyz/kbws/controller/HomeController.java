@@ -59,8 +59,11 @@ public class HomeController {
     @GetMapping("/getUserInfo")
     public BaseResponse<UserVO> getUserInfo(@NotEmpty String userId, HttpServletRequest request) {
         String token = request.getHeader("token");
-        UserVO userVO = redisComponent.getUserVO(token);
-        String currentUserId = userVO == null ? null : userVO.getId();
+        String currentUserId = null;
+        if (token != null) {
+            UserVO userVO = redisComponent.getUserVO(token);
+            currentUserId = userVO.getId();
+        }
         UserVO userDetailInfo = userService.getUserDetailInfo(currentUserId, userId);
         return ResultUtils.success(userDetailInfo);
     }
@@ -121,7 +124,7 @@ public class HomeController {
         focusQuery.setPageSize(10);
         focusQuery.setQueryType(UserConstant.ZERO);
         focusQuery.setOrderBy("focusTime desc");
-        List<FocusVO> list = focusMapper.selectList(focusQuery);
+        List<FocusVO> list = focusMapper.selectListByQuery(focusQuery);
         Page<FocusVO> page = new Page<>();
         page.setRecords(list);
         page.setTotal(list.size());
@@ -142,7 +145,7 @@ public class HomeController {
         focusQuery.setPageSize(10);
         focusQuery.setQueryType(UserConstant.ONE);
         focusQuery.setOrderBy("focusTime desc");
-        List<FocusVO> list = focusMapper.selectList(focusQuery);
+        List<FocusVO> list = focusMapper.selectListByQuery(focusQuery);
         Page<FocusVO> page = new Page<>();
         page.setRecords(list);
         page.setTotal(list.size());
