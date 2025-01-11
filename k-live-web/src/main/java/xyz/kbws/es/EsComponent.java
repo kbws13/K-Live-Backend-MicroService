@@ -233,7 +233,10 @@ public class EsComponent {
             searchRequest.source(searchSourceBuilder);
             SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
             SearchHits searchHits = searchResponse.getHits();
-            Integer totalCount = (int) searchHits.getTotalHits().value;
+            int totalCount = 0;
+            if (searchHits.getTotalHits() != null) {
+                totalCount = (int) searchHits.getTotalHits().value;
+            }
             List<Video> videoList = new ArrayList<>();
             List<String> userIdList = new ArrayList<>();
             for (SearchHit searchHit : searchHits.getHits()) {
