@@ -69,7 +69,7 @@ public class StatisticInfoController {
     @ApiOperation(value = "获取本周数据")
     @AuthCheck
     @GetMapping("/getWeek")
-    public BaseResponse<List<StatisticInfo>> getWeek(Integer dateType, HttpServletRequest request) {
+    public BaseResponse<List<StatisticInfo>> getWeek(Integer dataType, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
         List<String> beforeDays = getBeforeDays(7);
@@ -77,7 +77,7 @@ public class StatisticInfoController {
         String endTime = beforeDays.get(beforeDays.size() - 1);
         QueryWrapper<StatisticInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper
-                .eq("dateType", dateType)
+                .eq("dataType", dataType)
                 .eq("userId", userVO.getId())
                 .ge("statisticDate", startTime)
                 .le("statisticDate", endTime)

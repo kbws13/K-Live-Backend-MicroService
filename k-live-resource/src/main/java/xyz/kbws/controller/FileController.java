@@ -91,7 +91,7 @@ public class FileController {
     @ApiOperation(value = "上传视频接口")
     @AuthCheck
     @PostMapping("/uploadVideo")
-    public void uploadVideo(@NotNull MultipartFile chunkFIle, @NotNull Integer chunkIndex, @NotEmpty String uploadId, HttpServletRequest request) throws IOException {
+    public BaseResponse<Boolean> uploadVideo(@NotNull MultipartFile chunkFile, @NotNull Integer chunkIndex, @NotEmpty String uploadId, HttpServletRequest request) throws IOException {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
         UploadingFileVO fileVO = redisComponent.getUploadVideoFile(userVO.getId(), uploadId);
@@ -108,10 +108,11 @@ public class FileController {
         }
         String folder = appConfig.getProjectFolder() + FileConstant.FILE_FOLDER + FileConstant.FILE_FOLDER_TEMP + fileVO.getFilePath();
         File targetFile = new File(folder + "/" + chunkIndex);
-        chunkFIle.transferTo(targetFile);
+        chunkFile.transferTo(targetFile);
         fileVO.setChunkIndex(chunkIndex);
-        fileVO.setFileSize(fileVO.getFileSize() + chunkFIle.getSize());
+        fileVO.setFileSize(fileVO.getFileSize() + chunkFile.getSize());
         redisComponent.updateUploadVideoFile(userVO.getId(), fileVO);
+        return ResultUtils.success(true);
     }
 
     @ApiOperation(value = "删除已上传视频")
