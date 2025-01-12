@@ -104,7 +104,7 @@ public class HomeController {
 
     @ApiOperation(value = "取消关注")
     @AuthCheck
-    @PostMapping("/ cancelFocus")
+    @PostMapping("/cancelFocus")
     public BaseResponse<Boolean> cancelFocusUser(@NotEmpty String focusUserId, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
