@@ -27,6 +27,7 @@ import xyz.kbws.utils.FFmpegUtil;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -62,16 +63,14 @@ public class MessageConsumer {
      */
     @SneakyThrows
     @RabbitListener(
-            bindings = @QueueBinding(
-                    value = @Queue(value = MqConstant.FILE_QUEUE),
-                    exchange = @Exchange(name = MqConstant.FILE_EXCHANGE_NAME),
-                    key = MqConstant.TRANSFER_VIDEO_ROOTING_KEY
-            ),
-            ackMode = "MANUAL", concurrency = "2")
+            queues = {MqConstant.TRANSFER_VIDEO_QUEUE},
+            ackMode = "MANUAL", concurrency = "2"
+    )
     public void receiveTransferVideoMessage(String message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) {
         log.info("receiveTransferVideoMessage message = {}", message);
         if (message == null) {
             // 消息为空，则拒绝消息（不重试），进入死信队列
+            log.warn("收到空消息，拒绝处理，进入死信队列");
             channel.basicNack(deliveryTag, false, false);
             throw new BusinessException(ErrorCode.NULL_ERROR, "消息为空");
         }
@@ -83,7 +82,14 @@ public class MessageConsumer {
                     UploadingFileVO uploadVideoFile = redisComponent.getUploadVideoFile(videoFilePost.getUserId(), videoFilePost.getUploadId());
                     String tempFilePath = appConfig.getProjectFolder() + FileConstant.FILE_FOLDER + FileConstant.FILE_FOLDER_TEMP + uploadVideoFile.getFilePath();
                     String targetFilePath = appConfig.getProjectFolder() + FileConstant.FILE_FOLDER + FileConstant.FILE_VIDEO + uploadVideoFile.getFilePath();
-                    FileUtil.copy(tempFilePath, targetFilePath, false);
+                    File srcDir = new File(tempFilePath);
+                    File destDir = new File(targetFilePath);
+                    // 遍历并复制所有文件
+                    if (srcDir.isDirectory()) {
+                        for (File file : Objects.requireNonNull(srcDir.listFiles())) {
+                            FileUtil.copy(file, new File(destDir, file.getName()), false);
+                        }
+                    }
                     // 删除临时目录
                     FileUtil.del(tempFilePath);
                     // 删除 Redis 记录
@@ -103,6 +109,7 @@ public class MessageConsumer {
                     log.error("文件转码失败: {}", e.getMessage());
                     videoFilePost.setTransferResult(VideoFileTransferResultEnum.FAIL.getValue());
                 }
+                log.info("即将更新 videoFilePost: {}", JSONUtil.toJsonStr(videoFilePost));
                 videoPostClient.transferVideoFile(videoFilePost);
             });
             // 手动确认消息
@@ -156,7 +163,7 @@ public class MessageConsumer {
         File voideFile = new File(completeVideo);
         File tsFolder = voideFile.getParentFile();
         String codec = fFmpegUtil.getVideoCodec(completeVideo);
-        if (FileConstant.VIDEO_CODE_HEVC.equals(codec)) {
+        if (!FileConstant.VIDEO_CODE_HEVC.equals(codec)) {
             String tempFileName = completeVideo + FileConstant.VIDEO_TEMP_FILE_SUFFIX;
             new File(completeVideo).renameTo(new File(tempFileName));
             fFmpegUtil.coverHevc2Mp4(tempFileName, completeVideo);

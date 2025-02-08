@@ -16,13 +16,12 @@ public class MessageProducer {
     private RabbitTemplate rabbitTemplate;
 
     /**
-     * 发送消息
+     * 发送消息到指定队列
      *
-     * @param exchange
-     * @param routingKey
-     * @param message
+     * @param queueName 队列名称
+     * @param message   消息内容
      */
-    public void sendMessage(String exchange, String routingKey, String message) {
-        rabbitTemplate.convertAndSend(exchange, routingKey, message);
+    public void sendMessage(String queueName, String message) {
+        rabbitTemplate.convertAndSend("", queueName, message);
     }
 }

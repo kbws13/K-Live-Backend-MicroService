@@ -10,6 +10,7 @@ public interface MqConstant {
     String FILE_EXCHANGE_NAME = "file_exchange";
     // 交换队列
     String FILE_QUEUE = "file_queue";
+    String TRANSFER_VIDEO_QUEUE = "transfer_video_queue";
     // 视频转码路由键
     String TRANSFER_VIDEO_ROOTING_KEY = "transfer_video_routingKey";
     // 删除文件路由键

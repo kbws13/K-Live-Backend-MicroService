@@ -1,5 +1,6 @@
 package xyz.kbws;
 
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -9,6 +10,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @date 2024/12/21
  * @description:
  */
+@EnableRabbit
 @EnableFeignClients
 @SpringBootApplication
 public class KLiveResourceApplication {

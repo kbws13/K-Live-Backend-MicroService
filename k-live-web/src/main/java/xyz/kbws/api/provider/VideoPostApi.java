@@ -23,7 +23,7 @@ public class VideoPostApi {
     private VideoPostService videoPostService;
 
     @PostMapping("/transferVideoFile")
-    public void transferVideoFile(VideoFilePost videoFilePost) {
+    public void transferVideoFile(@RequestBody VideoFilePost videoFilePost) {
         videoPostService.transferVideoFile(videoFilePost);
     }
 

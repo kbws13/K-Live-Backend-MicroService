@@ -108,10 +108,10 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
         for (VideoFilePost item : videoFilePosts) {
             item.setUserId(videoPost.getUserId());
             item.setVideoId(videoPost.getId());
+            // 发送视频转码消息到消息队列
+            String jsonStr = JSONUtil.toJsonStr(item);
+            messageProducer.sendMessage(MqConstant.TRANSFER_VIDEO_QUEUE, jsonStr);
         }
-        // 发送视频转码消息到消息队列
-        JSONArray jsonArray = JSONUtil.parseArray(videoFilePosts);
-        messageProducer.sendMessage(MqConstant.FILE_EXCHANGE_NAME, MqConstant.TRANSFER_VIDEO_ROOTING_KEY, jsonArray.toString());
     }
 
     @GlobalTransactional(rollbackFor = Exception.class)
@@ -128,7 +128,7 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
             throw new BusinessException(ErrorCode.OPERATION_ERROR);
         }
         List<VideoFilePost> deleteFileList = new ArrayList<>();
-        List<VideoFilePost> addFileList = new ArrayList<>();
+        List<VideoFilePost> addFileList;
         QueryWrapper<VideoFilePost> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("videoId", videoPost.getId());
         queryWrapper.eq("userId", post.getUserId());
@@ -164,7 +164,7 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
             List<String> delFilePathList = deleteFileList.stream().map(VideoFilePost::getFilePath).collect(Collectors.toList());
             // 发送删除文件消息到消息队列
             JSONArray jsonArray = JSONUtil.parseArray(delFilePathList);
-            messageProducer.sendMessage(MqConstant.FILE_EXCHANGE_NAME, MqConstant.DEL_FILE_ROUTING_KEY, jsonArray.toString());
+            messageProducer.sendMessage(MqConstant.DEL_FILE_ROUTING_KEY, jsonArray.toString());
         }
         int index = 1;
         for (VideoFilePost videoFilePost : videoFilePosts) {
@@ -184,13 +184,14 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
                 item.setVideoId(videoPost.getId());
                 String jsonStr = JSONUtil.toJsonStr(item);
                 // 发送视频转码消息到消息队列
-                messageProducer.sendMessage(MqConstant.FILE_EXCHANGE_NAME, MqConstant.TRANSFER_VIDEO_ROOTING_KEY, jsonStr);
+                messageProducer.sendMessage(MqConstant.TRANSFER_VIDEO_QUEUE, jsonStr);
             }
         }
     }
 
     @Override
     public void transferVideoFile(VideoFilePost videoFilePost) {
+        log.info("即将开始 videoFilePost: {}", JSONUtil.toJsonStr(videoFilePost));
         videoFilePostMapper.updateById(videoFilePost);
         // 查询是否有转码失败的
         QueryWrapper<VideoFilePost> queryWrapper = new QueryWrapper<>();
@@ -268,7 +269,7 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
         if (!delFilePathList.isEmpty()) {
             // 发送删除文件消息到消息队列
             JSONArray jsonArray = JSONUtil.parseArray(delFilePathList);
-            messageProducer.sendMessage(MqConstant.FILE_EXCHANGE_NAME, MqConstant.DEL_FILE_ROUTING_KEY, jsonArray.toString());
+            messageProducer.sendMessage(MqConstant.DEL_FILE_ROUTING_KEY, jsonArray.toString());
         }
         // 保存信息到 ES
         esComponent.saveDoc(dbVideo);

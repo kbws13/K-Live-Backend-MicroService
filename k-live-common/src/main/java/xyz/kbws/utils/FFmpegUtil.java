@@ -39,7 +39,7 @@ public class FFmpegUtil {
      * @return 视频播放时长(秒)
      */
     public Integer getVideoDuration(String completeVideo) {
-        String cmd = "ffprobe -v error -show_entries format=duration -of default=noprint wrappers=1:nokey=1 \"%s\"";
+        String cmd = "ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 \"%s\"";
         cmd = String.format(cmd, completeVideo);
         String result = ProcessUtil.executeCommand(cmd, appConfig.getShowFFmpegLog());
         if (StrUtil.isEmpty(result)) {
@@ -61,8 +61,7 @@ public class FFmpegUtil {
         String result = ProcessUtil.executeCommand(cmd, appConfig.getShowFFmpegLog());
         result = result.replace("\n", "");
         result = result.substring(result.indexOf("=") + 1);
-        String codec = result.substring(0, result.indexOf("["));
-        return codec;
+        return result.substring(0, result.indexOf("["));
     }
 
     /**
@@ -84,8 +83,8 @@ public class FFmpegUtil {
      * @param videoFilePath 视频路径
      */
     public void coverVideo2TS(File tsFolder, String videoFilePath) {
-        String transfer2ts_cmd = "ffmpeg -y -i \"%s\" -vcodec copy -acodec copy -bsf h264_mp4toannexb \"%s\"";
-        String cutTs_cmd = "ffmpeg -i \"%s\" -c copy -map 0 0f segment -segment_list \"%s\" -segment_time 10 %s/%%4d.ts";
+        String transfer2ts_cmd = "ffmpeg -y -i \"%s\" -vcodec copy -acodec mp2 -bsf:v h264_mp4toannexb \"%s\"";
+        String cutTs_cmd = "ffmpeg -i \"%s\" -c copy -map 0 -f segment -segment_list \"%s\" -segment_time 10 %s/%%4d.ts";
         String tsPath = tsFolder + File.separator + FileConstant.TS_NAME;
         // 生成 .ts
         transfer2ts_cmd = String.format(transfer2ts_cmd, videoFilePath, tsPath);

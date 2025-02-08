@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 import xyz.kbws.constant.MqConstant;
 
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author kbws
@@ -28,26 +26,13 @@ public class InitRabbitMqBean {
         try {
             ConnectionFactory factory = new ConnectionFactory();
             factory.setHost(host);
-            Connection connection = factory.newConnection();
-            Channel channel = connection.createChannel();
+            try (Connection connection = factory.newConnection();
+                 Channel channel = connection.createChannel()) {
 
-            // 创建 file 交换机
-
-            channel.exchangeDeclare(MqConstant.FILE_EXCHANGE_NAME, MqConstant.FILE_DIRECT_EXCHANGE, true);
-            // 创建 file 队列
-            Map<String, Object> fileMap = new HashMap<>();
-            // file 队列绑定死信交换机
-            fileMap.put("x-dead-letter-exchange", MqConstant.DLX_EXCHANGE);
-            fileMap.put("x-dead-letter-routing-key", MqConstant.DLX_ROUTING_KEY);
-            channel.queueDeclare(MqConstant.FILE_QUEUE, true, false, false, fileMap);
-            channel.queueBind(MqConstant.FILE_QUEUE, MqConstant.FILE_EXCHANGE_NAME, MqConstant.TRANSFER_VIDEO_ROOTING_KEY);
-
-            // 创建死信队列和死信交换机
-            channel.queueDeclare(MqConstant.DLX_QUEUE, true, false, false, null);
-            channel.exchangeDeclare(MqConstant.DLX_EXCHANGE, MqConstant.FILE_DIRECT_EXCHANGE, true);
-            channel.queueBind(MqConstant.DLX_QUEUE, MqConstant.DLX_EXCHANGE, MqConstant.DEL_FILE_ROUTING_KEY);
-
-            log.info("消息队列启动成功");
+                // 创建 transfer_video 队列（不使用交换机）
+                channel.queueDeclare(MqConstant.TRANSFER_VIDEO_QUEUE, true, false, false, null);
+                log.info("转码视频队列 {} 创建成功", MqConstant.TRANSFER_VIDEO_QUEUE);
+            }
         } catch (Exception e) {
             log.error("消息队列启动失败: {}", e.getMessage());
         }

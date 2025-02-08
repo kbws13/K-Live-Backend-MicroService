@@ -20,7 +20,7 @@ public class ProcessUtil {
 
     private static final String osName = System.getProperty("os.name");
 
-    public static String executeCommand(String cmd, Boolean showLog) {
+    public static String executeCommand(String cmd, boolean showLog) {
         if (StrUtil.isEmpty(cmd)) {
             return null;
         }
@@ -43,14 +43,14 @@ public class ProcessUtil {
             // 等待ffmpeg命令执行完
             process.waitFor();
             // 获取执行结果字符串
-            String result = errorStream.stringBuffer.append(inputStream.stringBuffer + "\n").toString();
+            String result = inputStream.stringBuffer.append("\n").toString();
             // 输出执行的命令信息
             if (showLog) {
-                log.info("执行命令{}结果{}", cmd, result);
+                log.info("执行命令: {}, 结果: {}", cmd, result);
             }
             return result;
         } catch (Exception e) {
-            log.error("执行命令失败cmd{}失败:{} ", cmd, e.getMessage());
+            log.error("执行命令失败 cmd {} 失败:{} ", cmd, e.getMessage());
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "视频转换失败");
         } finally {
             if (null != process) {
@@ -64,7 +64,7 @@ public class ProcessUtil {
      * 在程序退出前结束已有的FFmpeg进程
      */
     private static class ProcessKiller extends Thread {
-        private Process process;
+        private final Process process;
 
         public ProcessKiller(Process process) {
             this.process = process;
@@ -80,7 +80,7 @@ public class ProcessUtil {
      * 用于取出ffmpeg线程执行过程中产生的各种输出和错误流的信息
      */
     static class PrintStream extends Thread {
-        InputStream inputStream = null;
+        InputStream inputStream;
         BufferedReader bufferedReader = null;
         StringBuffer stringBuffer = new StringBuffer();
 
@@ -95,12 +95,12 @@ public class ProcessUtil {
                     return;
                 }
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                String line = null;
+                String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     stringBuffer.append(line);
                 }
             } catch (Exception e) {
-                log.error("读取输入流出错了！错误信息：" + e.getMessage());
+                log.error("读取输入流出错了！错误信息：{}", e.getMessage());
             } finally {
                 try {
                     if (null != bufferedReader) {

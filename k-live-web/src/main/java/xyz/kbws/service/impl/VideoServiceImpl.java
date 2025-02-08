@@ -95,7 +95,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
             List<VideoFilePost> videoFilePostList = videoFilePostService.list(videoFilePostQueryWrapper);
             for (VideoFilePost videoFilePost : videoFilePostList) {
                 JSONArray jsonArray = JSONUtil.parseArray(videoFilePost);
-                messageProducer.sendMessage(MqConstant.FILE_EXCHANGE_NAME, MqConstant.DEL_FILE_ROUTING_KEY, jsonArray.toString());
+                messageProducer.sendMessage(MqConstant.DEL_FILE_ROUTING_KEY, jsonArray.toString());
             }
         });
     }

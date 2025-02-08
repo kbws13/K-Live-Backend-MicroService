@@ -75,7 +75,7 @@ public class CreateCenterController {
     @ApiOperation(value = "发布视频")
     @AuthCheck
     @PostMapping("/addPostVideo")
-    public void addPostVideo(@RequestBody VideoPostAddRequest videoPostAddRequest, HttpServletRequest request) {
+    public BaseResponse<String> addPostVideo(@RequestBody VideoPostAddRequest videoPostAddRequest, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
         List<VideoFilePost> videoFilePosts = videoPostAddRequest.getVideoFilePosts();
@@ -83,6 +83,7 @@ public class CreateCenterController {
         BeanUtil.copyProperties(videoPostAddRequest, videoPost);
         videoPost.setUserId(userVO.getId());
         videoPostService.addVideoPost(videoPost, videoFilePosts);
+        return ResultUtils.success("投稿成功");
     }
 
     @ApiOperation(value = "修改视频")
