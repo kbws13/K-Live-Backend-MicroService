@@ -124,7 +124,7 @@ public class CreateCenterController {
         return ResultUtils.success(res);
     }
 
-    @ApiOperation(value = "获取所有状态视频的数量")
+    @ApiOperation(value = "获取各个状态视频的数量")
     @AuthCheck
     @GetMapping("/getVideoStatusCount")
     public BaseResponse<VideoStatusCountVO> getVideoStatusCount(HttpServletRequest request) {
@@ -174,10 +174,11 @@ public class CreateCenterController {
     @ApiOperation(value = "修改视频互动设置")
     @AuthCheck
     @PostMapping("/changeVideoInteraction")
-    public void changeVideoInteraction(@NotEmpty String videoId, String interaction, HttpServletRequest request) {
+    public BaseResponse<String> changeVideoInteraction(@NotEmpty String videoId, String interaction, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
         videoService.changeInteraction(videoId, interaction, userVO.getId());
+        return ResultUtils.success("修改互动设置成功");
     }
 
     @ApiOperation(value = "删除视频")

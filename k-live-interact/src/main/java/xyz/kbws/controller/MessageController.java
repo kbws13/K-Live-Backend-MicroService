@@ -66,7 +66,7 @@ public class MessageController {
     @ApiOperation(value = "一键已读")
     @AuthCheck
     @PostMapping("/readAll")
-    public void readAll(@NotNull Integer messageType, HttpServletRequest request) {
+    public BaseResponse<String> readAll(@NotNull Integer messageType, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
         UpdateWrapper<Message> updateWrapper = new UpdateWrapper<>();
@@ -74,11 +74,12 @@ public class MessageController {
                 .eq("type", messageType)
                 .set("readType", MessageReadTypeEnum.READ.getValue());
         messageService.update(updateWrapper);
+        return ResultUtils.success("操作成功");
     }
 
     @ApiOperation(value = "获取指定类型的消息")
     @AuthCheck
-    @PostMapping("/load")
+    @PostMapping("/loadMessage")
     public BaseResponse<Page<Message>> loadMessage(@RequestBody MessageLoadRequest messageLoadRequest, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
@@ -96,7 +97,7 @@ public class MessageController {
 
     @ApiOperation(value = "删除消息")
     @AuthCheck
-    @PostMapping("/delete")
+    @PostMapping("/deleteMessage")
     public BaseResponse<Boolean> deleteMessage(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);

@@ -68,8 +68,8 @@ public class SeriesController {
 
     @ApiOperation(value = "添加视频合集")
     @AuthCheck
-    @PostMapping("/add")
-    public void addSeries(@RequestBody SeriesAddRequest seriesAddRequest, HttpServletRequest request) {
+    @PostMapping("/addSeries")
+    public BaseResponse<String> addSeries(@RequestBody SeriesAddRequest seriesAddRequest, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
         Series series = new Series();
@@ -77,36 +77,40 @@ public class SeriesController {
         series.setDescription(seriesAddRequest.getDescription());
         series.setUserId(userVO.getId());
         seriesService.addSeries(series, seriesAddRequest.getVideoIds());
+        return ResultUtils.success("添加合集成功");
     }
 
     @ApiOperation(value = "更改合集排序")
     @AuthCheck
     @PostMapping("/changeSeriesSort")
-    public void changeSeriesSort(@NotEmpty String seriesIds, HttpServletRequest request) {
+    public BaseResponse<String> changeSeriesSort(@NotEmpty String seriesIds, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
         seriesService.changeSeriesSort(userVO.getId(), seriesIds);
+        return ResultUtils.success("更改排序成功");
     }
 
     @ApiOperation(value = "删除视频合集")
     @AuthCheck
     @PostMapping("/deleteSeries")
-    public void deleteSeries(@NotNull Integer seriesId, HttpServletRequest request) {
+    public BaseResponse<String> deleteSeries(@NotNull Integer seriesId, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
         seriesService.deleteSeries(userVO.getId(), seriesId);
+        return ResultUtils.success("删除成功");
     }
 
     @ApiOperation(value = "更新视频合集")
     @AuthCheck
-    @PostMapping("/update")
-    public void updateSeries(@RequestBody SeriesUpdateRequest seriesUpdateRequest, HttpServletRequest request) {
+    @PostMapping("/updateSeries")
+    public BaseResponse<String> updateSeries(@RequestBody SeriesUpdateRequest seriesUpdateRequest, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
         Series series = new Series();
         BeanUtil.copyProperties(seriesUpdateRequest, series);
         series.setUserId(userVO.getId());
         seriesService.updateById(series);
+        return ResultUtils.success("更新成功");
     }
 
     @ApiOperation(value = "获取所有视频")
@@ -152,18 +156,20 @@ public class SeriesController {
     @ApiOperation(value = "合集添加视频")
     @AuthCheck
     @PostMapping("/saveSeriesContent")
-    public void saveSeriesContent(@NotNull Integer seriesId, @NotEmpty String videoId, HttpServletRequest request) {
+    public BaseResponse<String> saveSeriesContent(@NotNull Integer seriesId, @NotEmpty String videoId, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
         seriesService.saveSeriesContent(userVO.getId(), seriesId, videoId);
+        return ResultUtils.success("添加视频成功");
     }
 
     @ApiOperation(value = "删除合集中视频")
     @AuthCheck
     @PostMapping("/deleteSeriesVideo")
-    public void deleteSeriesVideo(@NotNull Integer seriesId, @NotEmpty String videoId, HttpServletRequest request) {
+    public BaseResponse<String> deleteSeriesVideo(@NotNull Integer seriesId, @NotEmpty String videoId, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
         seriesService.deleteSeriesContent(userVO.getId(), seriesId, videoId);
+        return ResultUtils.success("删除成功");
     }
 }

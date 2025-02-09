@@ -133,8 +133,8 @@ public class VideoController {
     }
 
     @ApiOperation(value = "搜索视频")
-    @GetMapping("/search")
-    public BaseResponse<Page<Video>> search(@NotEmpty String keyword, Integer orderType, Integer current) {
+    @GetMapping("/searchVideo")
+    public BaseResponse<Page<Video>> searchVideo(@NotEmpty String keyword, Integer orderType, Integer current) {
         //  记录搜索热词
         redisComponent.addKeywordCount(keyword);
         Page<Video> page = esComponent.search(true, keyword, orderType, current, 30);
@@ -157,7 +157,7 @@ public class VideoController {
     }
 
     @ApiOperation(value = "获取热门播放视频")
-    @GetMapping("/loadHotVideoList")
+    @PostMapping("/loadHotVideoList")
     public BaseResponse<Page<Video>> loadHotVideoList(@RequestBody VideoQueryRequest videoQueryRequest) {
         videoQueryRequest.setQueryUserInfo(true);
         videoQueryRequest.setLastPlayHour(CommonConstant.HOUR_24);
