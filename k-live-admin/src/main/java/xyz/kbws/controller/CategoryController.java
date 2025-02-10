@@ -37,7 +37,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @ApiOperation(value = "查询分类")
-    @PostMapping("/query")
+    @PostMapping("/queryCategory")
     public BaseResponse<List<Category>> queryCategory(@RequestBody CategoryQueryRequest categoryQueryRequest) {
         ThrowUtils.throwIf(categoryQueryRequest == null, ErrorCode.PARAMS_ERROR);
         List<Category> list = categoryService.queryCategory(categoryQueryRequest);
@@ -46,7 +46,7 @@ public class CategoryController {
 
     @ApiOperation(value = "添加分类")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    @PostMapping("/add")
+    @PostMapping("/addCategory")
     public BaseResponse<Boolean> addCategory(@RequestBody CategoryAddRequest categoryAddRequest) {
         ThrowUtils.throwIf(categoryAddRequest == null, ErrorCode.PARAMS_ERROR);
         Boolean res = categoryService.addCategory(categoryAddRequest);
@@ -55,7 +55,7 @@ public class CategoryController {
 
     @ApiOperation(value = "修改分类")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    @PostMapping("/update")
+    @PostMapping("/updateCategory")
     public BaseResponse<Boolean> updateCategory(@RequestBody CategoryUpdateRequest categoryUpdateRequest) {
         ThrowUtils.throwIf(categoryUpdateRequest == null, ErrorCode.PARAMS_ERROR);
         Boolean res = categoryService.updateCategory(categoryUpdateRequest);
@@ -64,7 +64,7 @@ public class CategoryController {
 
     @ApiOperation(value = "删除分类")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    @PostMapping("/delete")
+    @PostMapping("/deleteCategory")
     public BaseResponse<Boolean> deleteCategory(@RequestBody DeleteRequest deleteRequest) {
         ThrowUtils.throwIf(deleteRequest == null, ErrorCode.PARAMS_ERROR);
         boolean res = categoryService.deleteCategory(deleteRequest);
@@ -73,7 +73,7 @@ public class CategoryController {
 
     @ApiOperation(value = "修改分类排序")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    @PostMapping("/changeSort")
+    @PostMapping("/changeSortCategory")
     public BaseResponse<Boolean> changeSortCategory(@RequestBody CategoryChangeSortRequest categoryChangeSortRequest) {
         boolean res = categoryService.changeSortCategory(categoryChangeSortRequest);
         return ResultUtils.success(res);
