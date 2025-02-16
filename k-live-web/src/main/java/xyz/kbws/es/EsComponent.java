@@ -130,6 +130,7 @@ public class EsComponent {
             if (!acknowledged) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "初始化 ES 失败");
             }
+            log.info("初始化 ES 成功");
         } catch (Exception e) {
             log.error("初始化 ES 失败: {}", e.getMessage());
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "初始化 ES 失败");
@@ -166,7 +167,7 @@ public class EsComponent {
                 String methodName = "get" + StrUtil.upperFirst(field.getName());
                 Method method = video.getClass().getMethod(methodName);
                 Object object = method.invoke(video);
-                if (object != null && object instanceof String && !StrUtil.isEmpty(object.toString()) || object != null && !(object instanceof String)) {
+                if (object instanceof String && !StrUtil.isEmpty(object.toString()) || object != null && !(object instanceof String)) {
                     dataMap.put(field.getName(), object);
                 }
             }
@@ -256,9 +257,7 @@ public class EsComponent {
                             Function.identity(),
                             (data1, data2) -> data2
                     ));
-            videoList.forEach(item -> {
-                item.setNickName(userMap.get(item.getUserId()).getNickName());
-            });
+            videoList.forEach(item -> item.setNickName(userMap.get(item.getUserId()).getNickName()));
             Page<Video> page = new Page<>();
             page.setTotal(totalCount);
             page.setCurrent(current);

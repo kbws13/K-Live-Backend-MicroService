@@ -1,0 +1,41 @@
+{
+    "properties": {
+        "videoId": {
+            "type": "text",
+            "index": false
+        },
+        "userId": {
+            "type": "text",
+            "index": false
+        },
+        "videoCover": {
+            "type": "text",
+            "index": false
+        },
+        "videoName": {
+            "type": "text",
+            "analyzer": "ik_max_word"
+        },
+        "tags": {
+            "type": "text",
+            "analyzer": "comma"
+        },
+        "playCount": {
+            "type": "integer",
+            "index": false
+        },
+        "danmuCount": {
+            "type": "integer",
+            "index": false
+        },
+        "collectCount": {
+            "type": "integer",
+            "index": false
+        },
+        "createTime": {
+            "type": "date",
+            "format": "yyyy-MM-dd HH:mm:ss",
+            "index": false
+        }
+    }
+}

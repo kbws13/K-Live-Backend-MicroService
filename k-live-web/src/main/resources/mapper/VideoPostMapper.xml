@@ -56,8 +56,8 @@
             LEFT JOIN user u ON u.id = v.id
         </if>
         where v.userId = #{userId}
-        <if test="query.status != null">
-            and v.status like CONCAT('%', #{query.videoName}, '%')
+        <if test="query.videoName != null">
+            and v.name like CONCAT('%', #{query.videoName}, '%')
         </if>
         <if test="query.status != null">
             and v.status = #{query.status}
@@ -66,7 +66,7 @@
             and v.status not in (<foreach collection="query.excludeStatus" separator="," item="item">#{item}</foreach> )
         </if>
         order by v.createTime desc
-        <if test="videoPostQueryRequest.pageSize != null">
+        <if test="query.pageSize != null">
             LIMIT #{query.pageSize} OFFSET #{query.current}
         </if>
     </select>
