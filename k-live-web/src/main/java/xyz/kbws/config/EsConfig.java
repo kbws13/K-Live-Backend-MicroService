@@ -1,6 +1,7 @@
 package xyz.kbws.config;
 
 import org.elasticsearch.client.RestHighLevelClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
@@ -15,6 +16,12 @@ import javax.annotation.PreDestroy;
  */
 @Configuration
 public class EsConfig {
+
+    @Value("${es.username:elastic}")
+    private String username;
+
+    @Value("${es.password:elastic}")
+    private String password;
 
     private RestHighLevelClient restHighLevelClient;
 
@@ -35,6 +42,7 @@ public class EsConfig {
         final ClientConfiguration clientConfiguration = ClientConfiguration
                 .builder()
                 .connectedTo(appConfig.getEsHost())
+                .withBasicAuth(username, password)
                 .build();
         restHighLevelClient = RestClients.create(clientConfiguration).rest();
         return restHighLevelClient;

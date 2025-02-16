@@ -1,0 +1,1 @@
+docker exec -it elasticsearch /bin/bash -c "./bin/elasticsearch-plugin install https://get.infini.cloud/elasticsearch/analysis-ik/7.12.1"
