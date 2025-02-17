@@ -18,6 +18,7 @@ public class VideoPostQueryRequest extends PageRequest implements Serializable {
      * 父分类 id
      */
     private Integer parentCategoryId;
+    private Integer categoryId;
     private Integer status;
     private String videoName;
     private Boolean queryCount;

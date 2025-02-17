@@ -23,10 +23,7 @@ import xyz.kbws.mapper.UserMapper;
 import xyz.kbws.mapper.VideoFilePostMapper;
 import xyz.kbws.mapper.VideoPostMapper;
 import xyz.kbws.model.dto.videoPost.VideoPostQueryRequest;
-import xyz.kbws.model.entity.Video;
-import xyz.kbws.model.entity.VideoFile;
-import xyz.kbws.model.entity.VideoFilePost;
-import xyz.kbws.model.entity.VideoPost;
+import xyz.kbws.model.entity.*;
 import xyz.kbws.model.enums.VideoFileTransferResultEnum;
 import xyz.kbws.model.enums.VideoFileTypeEnum;
 import xyz.kbws.model.enums.VideoStatusEnum;
@@ -216,7 +213,8 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
 
     @Override
     public List<VideoPostVO> loadVideoPost(VideoPostQueryRequest videoPostQueryRequest, String userId) {
-        return videoPostMapper.loadVideoPost(videoPostQueryRequest, userId);
+        User user = userMapper.selectById(userId);
+        return videoPostMapper.loadVideoPost(videoPostQueryRequest, userId, user.getUserRole().equals("admin"));
     }
 
     @GlobalTransactional(rollbackFor = Exception.class)

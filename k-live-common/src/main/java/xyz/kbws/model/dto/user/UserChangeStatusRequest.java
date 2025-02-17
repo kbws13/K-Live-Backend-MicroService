@@ -14,5 +14,5 @@ public class UserChangeStatusRequest implements Serializable {
 
     private static final long serialVersionUID = -5558226427711147363L;
     private String userId;
-    private Integer userRole;
+    private String userRole;
 }

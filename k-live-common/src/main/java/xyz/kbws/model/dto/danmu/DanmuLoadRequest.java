@@ -19,4 +19,6 @@ public class DanmuLoadRequest extends PageRequest implements Serializable {
     private String videoId;
     @NotEmpty(message = "视频分 p 的 id 不能为空")
     private String fileId;
+    private Boolean queryVideoInfo;
+    private String videoNameFuzzy;
 }

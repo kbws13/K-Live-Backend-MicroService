@@ -29,16 +29,16 @@ public class SystemController {
 
     @ApiOperation(value = "获取系统设置")
     @AuthCheck
-    @GetMapping("/get")
-    public BaseResponse<SystemSetting> getSystem() {
+    @GetMapping("/getSystemSetting")
+    public BaseResponse<SystemSetting> getSystemSetting() {
         SystemSetting systemSetting = redisComponent.getSystemSetting();
         return ResultUtils.success(systemSetting);
     }
 
     @ApiOperation(value = "保存系统设置")
     @AuthCheck
-    @GetMapping("/save")
-    public void saveSystem(@RequestBody SystemSetting systemSetting) {
+    @GetMapping("/saveSystemSetting")
+    public void saveSystemSetting(@RequestBody SystemSetting systemSetting) {
         redisComponent.saveSystemSetting(systemSetting);
     }
 }

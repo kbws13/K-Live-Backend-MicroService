@@ -115,7 +115,7 @@ public class CreateCenterController {
             }
         }
         videoPostQueryRequest.setQueryUserInfo(false);
-        List<VideoPostVO> record = videoPostMapper.loadVideoPost(videoPostQueryRequest, userVO.getId());
+        List<VideoPostVO> record = videoPostMapper.loadVideoPost(videoPostQueryRequest, userVO.getId(), userVO.getUserRole().equals("admin"));
         Page<VideoPostVO> res = new Page<>();
         res.setRecords(record);
         res.setCurrent(videoPostQueryRequest.getCurrent());

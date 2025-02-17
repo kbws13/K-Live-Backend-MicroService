@@ -55,9 +55,18 @@
         <if test="query.queryUserInfo">
             LEFT JOIN user u ON u.id = v.id
         </if>
-        where v.userId = #{userId}
+        where
+        <if test="admin">
+            v.userId = #{userId}
+        </if>
         <if test="query.videoName != null">
             and v.name like CONCAT('%', #{query.videoName}, '%')
+        </if>
+        <if test="query.categoryId != null">
+            and v.categoryId = #{query.categoryId}
+        </if>
+        <if test="query.parentCategoryId != null">
+            and v.parentCategoryId = #{query.parentCategoryId}
         </if>
         <if test="query.status != null">
             and v.status = #{query.status}

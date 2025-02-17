@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface VideoPostMapper extends BaseMapper<VideoPost> {
 
-    List<VideoPostVO> loadVideoPost(@Param("query") VideoPostQueryRequest query, @Param("userId") String userId);
+    List<VideoPostVO> loadVideoPost(@Param("query") VideoPostQueryRequest query, @Param("userId") String userId, @Param("admin") boolean admin);
 }
 
 
