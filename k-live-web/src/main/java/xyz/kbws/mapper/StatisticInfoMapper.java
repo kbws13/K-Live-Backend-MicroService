@@ -23,7 +23,7 @@ public interface StatisticInfoMapper extends BaseMapper<StatisticInfo> {
     List<StatisticInfo> selectAction(@Param("statisticDate") String statisticDate
             , @Param("actionTypeArray") Integer[] actionTypeArray);
 
-    Map<String, Integer> selectTotalCount(@Param("userId") String userId);
+    Map<String, Object> selectTotalCount(@Param("userId") String userId);
 
     List<StatisticInfo> selectListTotalInfo(@Param("query") StatisticInfoQuery query);
 

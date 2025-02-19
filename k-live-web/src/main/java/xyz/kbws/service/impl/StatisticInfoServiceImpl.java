@@ -21,6 +21,7 @@ import xyz.kbws.service.StatisticInfoService;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -116,7 +117,11 @@ public class StatisticInfoServiceImpl extends ServiceImpl<StatisticInfoMapper, S
 
     @Override
     public Map<String, Integer> getTotalStatistic(String userId) {
-        Map<String, Integer> res = statisticInfoMapper.selectTotalCount(userId);
+        Map<String, Object> rowData = statisticInfoMapper.selectTotalCount(userId);
+        Map<String, Integer> res = new HashMap<>();
+        for (Map.Entry<String, Object> entry : rowData.entrySet()) {
+            res.put(entry.getKey(), Math.toIntExact((Long) entry.getValue()));
+        }
         if (!StrUtil.isEmpty(userId)) {
             res.put("fansCount", focusMapper.selectFansCount(userId));
         } else {

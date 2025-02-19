@@ -33,7 +33,8 @@ public class VideoPostApi {
     }
 
     @PostMapping("/loadVideoPost")
-    List<VideoPostVO> loadVideoPost(@RequestBody VideoPostQueryRequest videoPostQueryRequest, @RequestParam String userId) {
+    List<VideoPostVO> loadVideoPost(@RequestBody VideoPostQueryRequest videoPostQueryRequest) {
+        String userId = videoPostQueryRequest.getUserId();
         return videoPostService.loadVideoPost(videoPostQueryRequest, userId);
     }
 

@@ -1,6 +1,5 @@
 package xyz.kbws.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -50,7 +49,8 @@ public class VideoController {
                                                          HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
-        List<VideoPostVO> record = webClient.loadVideoPost(videoPostQueryRequest, userVO.getId());
+        videoPostQueryRequest.setUserId(userVO.getId());
+        List<VideoPostVO> record = webClient.loadVideoPost(videoPostQueryRequest);
         Page<VideoPostVO> res = new Page<>();
         res.setRecords(record);
         res.setCurrent(videoPostQueryRequest.getCurrent());
@@ -89,10 +89,7 @@ public class VideoController {
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     @PostMapping("/loadVideoPList")
     public BaseResponse<List<VideoFilePost>> loadVideoPList(@NotEmpty String videoId) {
-        QueryWrapper<VideoFilePost> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("videoId", videoId)
-                .orderByAsc("fileIndex");
-        List<VideoFilePost> videoFilePostList = webClient.selectVideoFileList(queryWrapper);
+        List<VideoFilePost> videoFilePostList = webClient.selectVideoFileList(videoId);
         return ResultUtils.success(videoFilePostList);
     }
 }

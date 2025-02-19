@@ -47,12 +47,12 @@
 
     <select id="selectTotalCount" resultType="java.util.Map">
         select
-        ifnull(sum(playCount), 0),
-        ifnull(sum(likeCount), 0),
-        ifnull(sum(danmuCount), 0),
-        ifnull(sum(commentCount), 0),
-        ifnull(sum(coinCount), 0),
-        ifnull(sum(collectCount), 0)
+            cast(ifnull(sum(playCount), 0) as SIGNED)  as playCount,
+            cast(ifnull(sum(likeCount), 0) as SIGNED)  as likeCount,
+            cast(ifnull(sum(danmuCount), 0) as SIGNED)  as danmuCount,
+            cast(ifnull(sum(commentCount), 0) as SIGNED)  as commentCount,
+            cast(ifnull(sum(coinCount), 0) as SIGNED)  as coinCount,
+            cast(ifnull(sum(collectCount), 0) as SIGNED)  as collectCount
         from video
         <where>
             <if test="userId != null">

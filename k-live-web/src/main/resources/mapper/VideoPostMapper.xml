@@ -53,7 +53,7 @@
             LEFT JOIN video c ON c.id = v.id
         </if>
         <if test="query.queryUserInfo">
-            LEFT JOIN user u ON u.id = v.id
+            LEFT JOIN user u ON u.id = v.userId
         </if>
         where
         <if test="admin">
@@ -76,7 +76,8 @@
         </if>
         order by v.createTime desc
         <if test="query.pageSize != null">
-            LIMIT #{query.pageSize} OFFSET #{query.current}
+--             TODO 实现分页
+            LIMIT #{query.pageSize}
         </if>
     </select>
 </mapper>

@@ -1,9 +1,7 @@
 package xyz.kbws.api.provider;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import xyz.kbws.model.entity.VideoFilePost;
 import xyz.kbws.service.VideoFilePostService;
 
@@ -23,7 +21,10 @@ public class VideoFilePostApi {
     private VideoFilePostService videoFilePostService;
 
     @PostMapping("/selectVideoFileList")
-    List<VideoFilePost> selectVideoFileList(QueryWrapper<VideoFilePost> queryWrapper) {
+    List<VideoFilePost> selectVideoFileList(@RequestParam("videoId") String videoId) {
+        QueryWrapper<VideoFilePost> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("videoId", videoId)
+                .orderByAsc("fileIndex");
         return videoFilePostService.list(queryWrapper);
     }
 }

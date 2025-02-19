@@ -24,4 +24,5 @@ public class VideoPostQueryRequest extends PageRequest implements Serializable {
     private Boolean queryCount;
     private Boolean queryUserInfo;
     private List<Integer> excludeStatus;
+    private String userId;
 }
