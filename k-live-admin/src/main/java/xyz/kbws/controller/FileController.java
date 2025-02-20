@@ -11,10 +11,8 @@ import xyz.kbws.common.ResultUtils;
 import xyz.kbws.utils.ResponseUtil;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
 
 /**
  * @author kbws
@@ -31,7 +29,7 @@ public class FileController {
     private ResourceClient resourceClient;
 
     @PostMapping("/uploadImage")
-    public BaseResponse<String> uploadImage(@NotNull MultipartFile file, @NotNull Boolean createThumbnail) throws IOException {
+    public BaseResponse<String> uploadImage(@NotNull MultipartFile file, @NotNull Boolean createThumbnail) {
         String res = resourceClient.uploadImage(file, createThumbnail);
         return ResultUtils.success(res);
     }

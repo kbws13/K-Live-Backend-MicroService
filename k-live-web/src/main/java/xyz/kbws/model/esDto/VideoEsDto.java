@@ -1,6 +1,6 @@
 package xyz.kbws.model.esDto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.util.Date;
@@ -49,6 +49,5 @@ public class VideoEsDto {
     /**
      * 创建时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date createTime;
+    private String createTime;
 }

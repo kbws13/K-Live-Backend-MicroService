@@ -243,6 +243,7 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
         Video dbVideo = videoService.getById(videoId);
         if (dbVideo == null) {
             // 第一次过审
+            dbVideo = new Video();
             SystemSetting systemSetting = redisComponent.getSystemSetting();
             // 给用户加硬币
             userMapper.updateCoinCount(videoPost.getUserId(), systemSetting.getPostVideoCoinCount());

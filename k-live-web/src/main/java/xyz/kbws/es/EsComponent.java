@@ -41,6 +41,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -147,6 +148,9 @@ public class EsComponent {
                 videoEsDto.setCollectCount(0);
                 videoEsDto.setPlayCount(0);
                 videoEsDto.setDanmuCount(0);
+                if (videoEsDto.getCreateTime() != null) {
+                    videoEsDto.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(video.getCreateTime()));
+                }
                 IndexRequest indexRequest = new IndexRequest(appConfig.getEsIndexName());
                 indexRequest.id(video.getId()).source(JSONUtil.toJsonStr(videoEsDto), XContentType.JSON);
                 restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);
@@ -249,7 +253,9 @@ public class EsComponent {
                 userIdList.add(video.getUserId());
             }
             QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-            queryWrapper.in("id", userIdList);
+            if (!userIdList.isEmpty()) {
+                queryWrapper.in("id", userIdList);
+            }
             List<User> userList = userService.list(queryWrapper);
             Map<String, User> userMap = userList.stream()
                     .collect(Collectors.toMap(

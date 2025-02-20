@@ -43,7 +43,7 @@ public interface WebClient {
     @PostMapping("/inner/videoFilePost/selectVideoFileList")
     List<VideoFilePost> selectVideoFileList(@RequestParam("videoId") String videoId);
 
-    @PostMapping("/inner/videoFilePost/auditVideo")
+    @PostMapping("/inner/videoPost/auditVideo")
     void auditVideo(@RequestParam String videoId, @RequestParam Integer status, @RequestParam String reason);
 
     @PostMapping("/inner/statistic/findListTotalInfo")
