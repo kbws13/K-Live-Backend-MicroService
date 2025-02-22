@@ -135,7 +135,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
         int recommendType;
-        if (video.getRecommendType().equals(VideoRecommendTypeEnum.RECOMMEND.getValue())) {
+        if (video.getRecommendType().equals(VideoRecommendTypeEnum.NO_RECOMMEND.getValue())) {
             recommendType = VideoRecommendTypeEnum.RECOMMEND.getValue();
         } else {
             recommendType = VideoRecommendTypeEnum.NO_RECOMMEND.getValue();

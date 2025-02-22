@@ -122,15 +122,13 @@ public class VideoCommentController {
 
         Page<VideoComment> page = new Page<>();
         List<VideoComment> videoComments = videoCommentService.listByParams(videoCommentQuery);
-        if (current == 1) {
-            List<VideoComment> topCommentList = topComment(videoCommentQuery.getVideoId());
-            if (!topCommentList.isEmpty()) {
-                List<VideoComment> commentList = videoComments.stream()
-                        .filter(item -> !item.getId().equals(topCommentList.get(0).getId()))
-                        .collect(Collectors.toList());
-                commentList.addAll(topCommentList);
-                videoComments = commentList;
-            }
+        List<VideoComment> topCommentList = topComment(videoCommentQuery.getVideoId());
+        if (!topCommentList.isEmpty()) {
+            List<VideoComment> commentList = videoComments.stream()
+                    .filter(item -> !item.getId().equals(topCommentList.get(0).getId()))
+                    .collect(Collectors.toList());
+            commentList.addAll(0, topCommentList);
+            videoComments = commentList;
         }
         page.setCurrent(current);
         page.setSize(pageSize);
@@ -155,7 +153,7 @@ public class VideoCommentController {
 
     @ApiOperation(value = "置顶评论")
     @AuthCheck
-    @PostMapping("/top")
+    @PostMapping("/topComment")
     public BaseResponse<Boolean> topComment(@NotNull Integer commentId, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);

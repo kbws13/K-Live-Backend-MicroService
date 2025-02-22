@@ -145,7 +145,7 @@ public class FileController {
             folderFile.mkdirs();
         }
         String fileName = file.getOriginalFilename();
-        String fileSuffix = fileName.substring(fileName.indexOf("."));
+        String fileSuffix = fileName.substring(fileName.lastIndexOf("."));
         String realFileName = RandomUtil.randomString(CommonConstant.LENGTH_30) + fileSuffix;
         String filePath = folder + "/" + realFileName;
         file.transferTo(new File(filePath));
@@ -175,7 +175,7 @@ public class FileController {
     }
 
     @ApiOperation(value = "获取视频 TS 文件")
-    @GetMapping("/videoResourceTS/{fileId}/{ts}")
+    @GetMapping("/videoResource/{fileId}/{ts}")
     public void videoResourceTS(@PathVariable("fileId") @NotEmpty(message = "文件 id 不能为空") String fileId,
                                 @PathVariable("ts") @NotEmpty(message = "ts 不能为空") String ts,
                                 HttpServletResponse response) {

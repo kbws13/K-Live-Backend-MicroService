@@ -148,9 +148,6 @@ public class EsComponent {
                 videoEsDto.setCollectCount(0);
                 videoEsDto.setPlayCount(0);
                 videoEsDto.setDanmuCount(0);
-                if (videoEsDto.getCreateTime() != null) {
-                    videoEsDto.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(video.getCreateTime()));
-                }
                 IndexRequest indexRequest = new IndexRequest(appConfig.getEsIndexName());
                 indexRequest.id(video.getId()).source(JSONUtil.toJsonStr(videoEsDto), XContentType.JSON);
                 restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);
