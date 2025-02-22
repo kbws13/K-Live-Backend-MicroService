@@ -23,6 +23,8 @@
     </sql>
 
     <sql id="queryCondition">
+        where
+        1=1
         <if test="query.id != null">
             and u.id = #{query.id}
         </if>
@@ -47,18 +49,24 @@
 
     <select id="selectList" resultType="xyz.kbws.model.entity.Message">
         select
-        <include refid="Base_Column_List"/>
+            u.id,
+            u.userId,
+            u.videoId,
+            u.type,
+            u.sendUserId,
+            u.readType,
+            u.createTime,
+            u.extendJson
         , user.avatar sendUserAvatar, user.nickName sendUserName, v.name videoName, v.cover videoCover
         from message u
         left join video v on u.videoId = v.id
         left join user on user.id = u.sendUserId
-        where
         <include refid="queryCondition"/>
         <if test="query.sortField != null">
             order by #{query.sortField} #{videoQueryRequest.sortOrder}
         </if>
         <if test="query.pageSize != null">
-            limit #{query.pageSize} offset #{query.current}
+            limit #{query.pageSize}
         </if>
     </select>
 </mapper>

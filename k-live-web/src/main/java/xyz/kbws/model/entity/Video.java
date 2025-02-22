@@ -16,8 +16,6 @@ import java.util.Date;
 @TableName(value = "video")
 @Data
 public class Video implements Serializable {
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
     /**
      * 视频 id
      */

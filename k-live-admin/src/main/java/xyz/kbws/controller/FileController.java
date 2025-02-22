@@ -46,7 +46,7 @@ public class FileController {
         ResponseUtil.coverFileResponse2Stream(response, resource);
     }
 
-    @GetMapping("/videoResourceTS/{fileId}/{ts}")
+    @GetMapping("/videoResource/{fileId}/{ts}")
     public void videoResourceTS(@PathVariable("fileId") String fileId, @PathVariable("ts") String ts, HttpServletResponse response) {
         Response resource = resourceClient.videoResourceTS(fileId, ts);
         ResponseUtil.coverFileResponse2Stream(response, resource);

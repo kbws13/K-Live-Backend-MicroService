@@ -224,10 +224,11 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
         if (videoStatusEnum == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "该参数不存在");
         }
-        QueryWrapper<VideoPost> queryWrapper = new QueryWrapper<>();
+        UpdateWrapper<VideoPost> queryWrapper = new UpdateWrapper<>();
         queryWrapper.eq("status", VideoStatusEnum.STATUS2.getValue());
         queryWrapper.eq("id", videoId);
-        int auditCount = Math.toIntExact(this.count(queryWrapper));
+        queryWrapper.set("status", videoStatusEnum.getValue());
+        int auditCount = videoPostMapper.update(null, queryWrapper);
         if (auditCount == 0) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "审核失败，请稍后重试");
         }

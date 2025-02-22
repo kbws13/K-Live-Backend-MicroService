@@ -2,10 +2,7 @@ package xyz.kbws.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import xyz.kbws.annotation.AuthCheck;
 import xyz.kbws.common.BaseResponse;
 import xyz.kbws.common.ResultUtils;
@@ -37,8 +34,9 @@ public class SystemController {
 
     @ApiOperation(value = "保存系统设置")
     @AuthCheck
-    @GetMapping("/saveSystemSetting")
-    public void saveSystemSetting(@RequestBody SystemSetting systemSetting) {
+    @PostMapping("/saveSystemSetting")
+    public BaseResponse<String> saveSystemSetting(@RequestBody SystemSetting systemSetting) {
         redisComponent.saveSystemSetting(systemSetting);
+        return ResultUtils.success("保存成功");
     }
 }

@@ -20,4 +20,6 @@ public class ActionQuery extends PageRequest {
     private String userId;
 
     private Boolean queryVideo;
+
+    private Integer actionType;
 }

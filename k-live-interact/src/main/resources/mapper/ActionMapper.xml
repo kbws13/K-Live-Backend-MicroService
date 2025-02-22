@@ -23,8 +23,12 @@
     </sql>
 
     <sql id="queryCondition">
+        1=1
         <if test="query.userId != null and query.userId != ''">
-            userId = #{query.userId}
+            and u.userId = #{query.userId}
+        </if>
+        <if test="query.actionType != null">
+            and u.actionType = #{query.actionType}
         </if>
     </sql>
 
@@ -43,8 +47,8 @@
         <if test="query.sortField != null">
             order by ${query.sortField} ${query.sortOrder}
         </if>
-        <if test="videoPostQueryRequest.pageSize != null">
-            LIMIT #{query.pageSize} OFFSET #{query.current}
+        <if test="query.pageSize != null">
+            LIMIT #{query.pageSize}
         </if>
     </select>
 </mapper>

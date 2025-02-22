@@ -13,6 +13,7 @@ import xyz.kbws.constant.CommonConstant;
 import xyz.kbws.model.dto.action.ActionDoRequest;
 import xyz.kbws.model.entity.Action;
 import xyz.kbws.model.enums.MessageTypeEnum;
+import xyz.kbws.model.enums.UserActionTypeEnum;
 import xyz.kbws.model.query.ActionQuery;
 import xyz.kbws.model.vo.UserVO;
 import xyz.kbws.redis.RedisComponent;
@@ -56,6 +57,7 @@ public class ActionController {
     @GetMapping("/loadUserCollection")
     public BaseResponse<Page<Action>> loadUserCollection(@NotEmpty String userId, Integer pageNo, Integer pageSize) {
         ActionQuery actionQuery = new ActionQuery();
+        actionQuery.setActionType(UserActionTypeEnum.VIDEO_COLLECT.getValue());
         actionQuery.setUserId(userId);
         actionQuery.setQueryVideo(true);
         actionQuery.setCurrent(pageNo);

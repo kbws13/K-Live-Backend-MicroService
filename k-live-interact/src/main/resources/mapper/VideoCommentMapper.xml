@@ -25,9 +25,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        v
-        .
-        id
+        v.id
         ,parentCommentId,videoId,
         videoUserId,content,imgPath,
         userId,replyUserId,topType,
@@ -36,8 +34,9 @@
 
     <sql id="query_condition">
         where
+        1=1
         <if test="query.videoId != null and query.videoId != ''">
-            videoId = #{query.videoId}
+            and videoId = #{query.videoId}
         </if>
         <if test="query.parentCommandId != null and query.parentCommandId != ''">
             and parentCommandId = #{query.parentCommandId}
@@ -95,13 +94,12 @@
         select
         <include refid="Base_Column_List"/>, u.nickName, u.avatar
         from videoComment v left join user u on v.userId = u.id
-        where
         <include refid="query_condition"/>
         <if test="query.sortField != null">
             order by ${query.sortField}
         </if>
-        <if test="query.pageSize !=- null">
-            LIMIT #{query.pageSize} OFFSET #{query.current}
+        <if test="query.pageSize != null">
+            LIMIT #{query.pageSize}
         </if>
     </select>
 

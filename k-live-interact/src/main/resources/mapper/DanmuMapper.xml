@@ -25,8 +25,9 @@
 
     <sql id="queryCondition">
         where
+        1=1
         <if test="query.videoId != null and query.videoId != ''">
-            videoId = #{query.videoId}
+            and videoId = #{query.videoId}
         </if>
         <if test="query.userId != null and query.userId != ''">
             and vd.userId = #{query.userId}
@@ -38,7 +39,15 @@
 
     <select id="selectList" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List"/>
+            v.id,
+            v.videoId,
+            v.fileId,
+            v.userId,
+            v.postTime,
+            v.TEXT,
+            v.MODE,
+            v.color,
+            v.TIME
         <if test="query.queryVideoInfo">
             , vd.name videoName, vd.cover videoCover, u.nickName
         </if>
@@ -51,8 +60,8 @@
         <if test="query.sortField != null">
             order by ${query.sortField} ${query.sortOrder}
         </if>
-        <if test="query.pageSize !=- null">
-            LIMIT #{query.pageSize} OFFSET #{query.current}
+        <if test="query.pageSize != null">
+            LIMIT #{query.pageSize}
         </if>
     </select>
 

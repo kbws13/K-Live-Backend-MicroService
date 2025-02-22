@@ -14,7 +14,7 @@ public interface CommonConstant {
     /**
      * 降序
      */
-    String SORT_ORDER_DESC = " descend";
+    String SORT_ORDER_DESC = "desc";
 
     Integer LENGTH_15 = 15;
 

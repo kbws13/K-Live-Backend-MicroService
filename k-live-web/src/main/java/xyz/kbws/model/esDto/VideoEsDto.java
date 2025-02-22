@@ -49,5 +49,6 @@ public class VideoEsDto {
     /**
      * 创建时间
      */
-    private String createTime;
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
 }
