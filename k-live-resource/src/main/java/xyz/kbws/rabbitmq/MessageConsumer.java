@@ -5,9 +5,6 @@ import cn.hutool.json.JSONUtil;
 import com.rabbitmq.client.Channel;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -52,7 +49,7 @@ public class MessageConsumer {
     @Resource
     private AppConfig appConfig;
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(4);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(4);
 
     /**
      * 监听并处理视频转码消息
@@ -129,11 +126,7 @@ public class MessageConsumer {
      */
     @SneakyThrows
     @RabbitListener(
-            bindings = @QueueBinding(
-                    value = @Queue(value = MqConstant.FILE_QUEUE),
-                    exchange = @Exchange(name = MqConstant.FILE_EXCHANGE_NAME),
-                    key = MqConstant.DEL_FILE_ROUTING_KEY
-            ),
+            queues = {MqConstant.DEL_VIDEO_QUEUE},
             ackMode = "MANUAL", concurrency = "2")
     public void receiveDeleteFileMessage(String message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) {
         log.info("receiveDeleteFileMessage message = {}", message);
@@ -183,7 +176,7 @@ public class MessageConsumer {
         try (RandomAccessFile writeFile = new RandomAccessFile(targetFile, "rw")) {
             byte[] bytes = new byte[1024 * 10];
             for (int i = 0; i < fileList.length; i++) {
-                int len = -1;
+                int len;
                 // 创建读块文件的对象
                 File chunkFile = new File(dirPath + File.separator + i);
                 try (RandomAccessFile readFile = new RandomAccessFile(chunkFile, "r")) {
@@ -199,8 +192,8 @@ public class MessageConsumer {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "合并文件 " + dirPath + " 出错了");
         } finally {
             if (delSource) {
-                for (int i = 0; i < fileList.length; i++) {
-                    fileList[i].delete();
+                for (File file : fileList) {
+                    file.delete();
                 }
             }
         }

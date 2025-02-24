@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 import xyz.kbws.constant.MqConstant;
 
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author kbws
@@ -43,12 +41,10 @@ public class InitRabbitMqBean {
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
 
-            // 创建 news 交换机
-            channel.exchangeDeclare(MqConstant.NEWS_EXCHANGE_NAME, MqConstant.NEWS_DIRECT_EXCHANGE, true);
+            // 创建 news 队列
             channel.queueDeclare(MqConstant.NEWS_QUEUE, true, false, false, null);
-            channel.queueBind(MqConstant.NEWS_QUEUE, MqConstant.NEWS_EXCHANGE_NAME, MqConstant.VIDEO_PLAY_ROUTING_KEY);
 
-            log.info("消息队列启动成功");
+            log.info("消息处理队列 {} 启动成功", MqConstant.NEWS_QUEUE);
         } catch (Exception e) {
             log.error("消息队列启动失败: {}", e.getMessage());
         }

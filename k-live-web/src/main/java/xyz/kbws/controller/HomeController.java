@@ -169,7 +169,8 @@ public class HomeController {
             orderTypeEnum = VideoOrderTypeEnum.CREATE_TIME;
         }
         queryWrapper.orderByDesc(orderTypeEnum.getField());
-        queryWrapper.like("name", homeLoadVideoRequest.getVideoName());
+        String videoName = homeLoadVideoRequest.getVideoName();
+        queryWrapper.like(!videoName.isEmpty(), "name", videoName);
         Page<Video> page = videoService.page(new Page<>(current, pageSize), queryWrapper);
         return ResultUtils.success(page);
     }

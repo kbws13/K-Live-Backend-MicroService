@@ -40,13 +40,14 @@ public class InitRabbitMqBean {
             factory.setPassword(password);
             try (Connection connection = factory.newConnection();
                  Channel channel = connection.createChannel()) {
-
-                // 创建 transfer_video 队列（不使用交换机）
+                // 创建 transfer_video 队列
                 channel.queueDeclare(MqConstant.TRANSFER_VIDEO_QUEUE, true, false, false, null);
+                channel.queueDeclare(MqConstant.DEL_VIDEO_QUEUE, true, false, false, null);
                 log.info("转码视频队列 {} 创建成功", MqConstant.TRANSFER_VIDEO_QUEUE);
+                log.info("删除视频文件队列 {} 创建成功", MqConstant. DEL_VIDEO_QUEUE);
             }
         } catch (Exception e) {
-            log.error("消息队列启动失败: {}", e.getMessage());
+            log.error("转码视频队列 {} 创建失败，消息队列启动失败: {}", MqConstant.TRANSFER_VIDEO_QUEUE, e.getMessage());
         }
     }
 }

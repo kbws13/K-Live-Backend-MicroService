@@ -5,9 +5,6 @@ import cn.hutool.json.JSONUtil;
 import com.rabbitmq.client.Channel;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -54,11 +51,7 @@ public class MessageConsumer {
      */
     @SneakyThrows
     @RabbitListener(
-            bindings = @QueueBinding(
-                    value = @Queue(value = MqConstant.NEWS_QUEUE),
-                    exchange = @Exchange(name = MqConstant.NEWS_EXCHANGE_NAME),
-                    key = MqConstant.VIDEO_PLAY_ROUTING_KEY
-            ),
+            queues = {MqConstant.NEWS_QUEUE},
             ackMode = "MANUAL", concurrency = "2")
     public void receiveNewsMessage(String message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) {
         log.info("receiveNewsMessage message = {}", message);

@@ -171,7 +171,7 @@ public class FileController {
         if (userVO != null) {
             videoPlayRequest.setUserId(userVO.getId());
         }
-        messageProducer.sendMessage(MqConstant.NEWS_EXCHANGE_NAME, MqConstant.NEWS_QUEUE, JSONUtil.toJsonStr(videoPlayRequest));
+        messageProducer.sendMessage(MqConstant.NEWS_QUEUE, MqConstant.NEWS_QUEUE, JSONUtil.toJsonStr(videoPlayRequest));
     }
 
     @ApiOperation(value = "获取视频 TS 文件")

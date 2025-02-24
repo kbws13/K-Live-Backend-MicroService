@@ -18,6 +18,7 @@
     </sql>
 
     <sql id="queryCondition">
+        1=1
         <if test="query.userId != null">
             and v.userId = #{query.userId}
         </if>
@@ -25,7 +26,10 @@
 
     <select id="selectList" resultType="xyz.kbws.model.entity.VideoPlayHistory">
         select
-        <include refid="Base_Column_List"/>
+            v.userId,
+            v.videoId,
+            v.fileIndex,
+            v.lastUpdateTime
         <if test="query.queryVideoInfo">
             , d.cover videoCover, d.name videoName
         </if>
@@ -36,10 +40,10 @@
         where
         <include refid="queryCondition"/>
         <if test="query.sortField != null">
-            order by #{query.sortField} #{videoQueryRequest.sortOrder}
+            order by #{query.sortField} #{query.sortOrder}
         </if>
         <if test="query.pageSize != null">
-            limit #{query.pageSize} offset #{query.current}
+            limit #{query.pageSize}
         </if>
     </select>
 </mapper>

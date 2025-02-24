@@ -161,7 +161,7 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
             List<String> delFilePathList = deleteFileList.stream().map(VideoFilePost::getFilePath).collect(Collectors.toList());
             // 发送删除文件消息到消息队列
             JSONArray jsonArray = JSONUtil.parseArray(delFilePathList);
-            messageProducer.sendMessage(MqConstant.DEL_FILE_ROUTING_KEY, jsonArray.toString());
+            messageProducer.sendMessage(MqConstant.DEL_VIDEO_QUEUE, jsonArray.toString());
         }
         int index = 1;
         for (VideoFilePost videoFilePost : videoFilePosts) {
@@ -269,7 +269,7 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
         if (!delFilePathList.isEmpty()) {
             // 发送删除文件消息到消息队列
             JSONArray jsonArray = JSONUtil.parseArray(delFilePathList);
-            messageProducer.sendMessage(MqConstant.DEL_FILE_ROUTING_KEY, jsonArray.toString());
+            messageProducer.sendMessage(MqConstant.DEL_VIDEO_QUEUE, jsonArray.toString());
         }
         // 保存信息到 ES
         esComponent.saveDoc(dbVideo);
