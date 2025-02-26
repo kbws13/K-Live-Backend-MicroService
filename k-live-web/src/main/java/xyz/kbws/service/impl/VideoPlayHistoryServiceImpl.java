@@ -32,7 +32,7 @@ public class VideoPlayHistoryServiceImpl extends ServiceImpl<VideoPlayHistoryMap
         videoPlayHistory.setVideoId(videoId);
         videoPlayHistory.setFileIndex(fileIndex);
         videoPlayHistory.setLastUpdateTime(DateUtil.date());
-        this.saveOrUpdate(videoPlayHistory);
+        videoPlayHistoryMapper.insertOrUpdate(videoPlayHistory);
     }
 
     @Override

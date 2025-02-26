@@ -18,11 +18,10 @@ public class MessageProducer {
     /**
      * 发送消息
      *
-     * @param exchange
-     * @param routingKey
-     * @param message
+     * @param queueName 队列名称
+     * @param message 消息
      */
-    public void sendMessage(String exchange, String routingKey, String message) {
-        rabbitTemplate.convertAndSend(exchange, routingKey, message);
+    public void sendMessage(String queueName, String message) {
+        rabbitTemplate.convertAndSend("", queueName, message);
     }
 }

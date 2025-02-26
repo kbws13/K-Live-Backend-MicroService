@@ -46,4 +46,51 @@
             limit #{query.pageSize}
         </if>
     </select>
+
+    <insert id="insertOrUpdate" parameterType="xyz.kbws.model.entity.VideoPlayHistory">
+        INSERT INTO videoPlayHistory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bean.userId != null">
+                userId,
+            </if>
+            <if test="bean.videoId != null">
+                videoId,
+            </if>
+            <if test="bean.fileIndex != null">
+                fileIndex,
+            </if>
+            <if test="bean.lastUpdateTime != null">
+                lastUpdateTime,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bean.userId!=null">
+                #{bean.userId},
+            </if>
+            <if test="bean.videoId!=null">
+                #{bean.videoId},
+            </if>
+            <if test="bean.fileIndex!=null">
+                #{bean.fileIndex},
+            </if>
+            <if test="bean.lastUpdateTime!=null">
+                #{bean.lastUpdateTime},
+            </if>
+        </trim>
+        on DUPLICATE key update
+        <trim prefix="" suffix="" suffixOverrides=",">
+            <if test="bean.userId!=null">
+                userId = VALUES(userId),
+            </if>
+            <if test="bean.videoId!=null">
+                videoId = VALUES(videoId),
+            </if>
+            <if test="bean.fileIndex!=null">
+                fileIndex = VALUES(fileIndex),
+            </if>
+            <if test="bean.lastUpdateTime!=null">
+                lastUpdateTime = VALUES(lastUpdateTime),
+            </if>
+        </trim>
+    </insert>
 </mapper>

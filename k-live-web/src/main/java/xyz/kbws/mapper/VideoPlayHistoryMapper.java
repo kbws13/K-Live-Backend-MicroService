@@ -16,6 +16,8 @@ import java.util.List;
 public interface VideoPlayHistoryMapper extends BaseMapper<VideoPlayHistory> {
 
     List<VideoPlayHistory> selectList(@Param("query") VideoHistoryQueryRequest query);
+
+    void insertOrUpdate(@Param("bean") VideoPlayHistory bean);
 }
 
 

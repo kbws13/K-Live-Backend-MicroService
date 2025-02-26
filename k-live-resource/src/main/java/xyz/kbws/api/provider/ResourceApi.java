@@ -7,6 +7,7 @@ import xyz.kbws.controller.FileController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -32,8 +33,8 @@ public class ResourceApi {
     }
 
     @GetMapping("/videoResource/{fileId}")
-    public void videoResource(@PathVariable("fileId") String fileId, HttpServletRequest request, HttpServletResponse response) {
-        fileController.videoResource(fileId, request, response);
+    public void videoResource(@PathVariable("fileId") String fileId, HttpServletResponse response) {
+        fileController.videoResource(fileId, response);
     }
 
     @GetMapping("/videoResourceTS/{fileId}/{ts}")

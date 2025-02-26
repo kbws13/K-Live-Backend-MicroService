@@ -9,6 +9,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import xyz.kbws.annotation.AuthCheck;
 import xyz.kbws.api.consumer.VideoFileClient;
@@ -31,8 +33,10 @@ import xyz.kbws.redis.RedisComponent;
 import xyz.kbws.utils.FFmpegUtil;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.File;
@@ -158,20 +162,19 @@ public class FileController {
 
     @ApiOperation(value = "获取视频 m3u8 文件")
     @GetMapping("/videoResource/{fileId}")
-    public void videoResource(@PathVariable("fileId") @NotEmpty(message = "文件 id 不能为空") String fileId, HttpServletRequest request, HttpServletResponse response) {
+    public void videoResource(@PathVariable("fileId") @NotEmpty(message = "文件 id 不能为空") String fileId, HttpServletResponse response) {
         VideoFile videoFile = videoFileClient.getVideoFileById(fileId);
         String filePath = videoFile.getFilePath();
         readFile(response, filePath + File.separator + FileConstant.M3U8_NAME);
         // 更新视频的观看信息
-        String token = request.getHeader("token");
-        UserVO userVO = redisComponent.getUserVO(token);
+        UserVO userVO = getTokenInfoFromCookie();
         VideoPlayRequest videoPlayRequest = new VideoPlayRequest();
         videoPlayRequest.setVideoId(videoFile.getVideoId());
         videoPlayRequest.setFileIndex(videoFile.getFileIndex());
         if (userVO != null) {
             videoPlayRequest.setUserId(userVO.getId());
         }
-        messageProducer.sendMessage(MqConstant.NEWS_QUEUE, MqConstant.NEWS_QUEUE, JSONUtil.toJsonStr(videoPlayRequest));
+        messageProducer.sendMessage(MqConstant.NEWS_QUEUE, JSONUtil.toJsonStr(videoPlayRequest));
     }
 
     @ApiOperation(value = "获取视频 TS 文件")
@@ -209,5 +212,27 @@ public class FileController {
             return false;
         }
         return true;
+    }
+
+    public UserVO getTokenInfoFromCookie() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String token = getTokenFromCookie(request);
+        if (token == null) {
+            return null;
+        }
+        return redisComponent.getUserVO(token);
+    }
+
+    private String getTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return null;
+        }
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equalsIgnoreCase("token")) {
+                return cookie.getValue();
+            }
+        }
+        return null;
     }
 }
