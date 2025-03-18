@@ -22,6 +22,7 @@
         <module>k-live-admin</module>
         <module>k-live-resource</module>
         <module>k-live-interact</module>
+        <module>k-live-dynamic-thread-pool</module>
     </modules>
 
     <properties>

@@ -25,8 +25,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author kbws
@@ -49,7 +48,8 @@ public class MessageConsumer {
     @Resource
     private AppConfig appConfig;
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(4);
+    @Resource
+    private ThreadPoolExecutor transferVideoExecutor;
 
     /**
      * 监听并处理视频转码消息
@@ -73,7 +73,7 @@ public class MessageConsumer {
         }
 
         try {
-            executorService.execute(() -> {
+            transferVideoExecutor.execute(() -> {
                 VideoFilePost videoFilePost = JSONUtil.toBean(message, VideoFilePost.class);
                 try {
                     UploadingFileVO uploadVideoFile = redisComponent.getUploadVideoFile(videoFilePost.getUserId(), videoFilePost.getUploadId());
@@ -137,7 +137,7 @@ public class MessageConsumer {
         }
 
         try {
-            executorService.execute(() -> {
+            transferVideoExecutor.execute(() -> {
                 VideoFilePost videoFilePost = JSONUtil.toBean(message, VideoFilePost.class);
                 boolean del = FileUtil.del(new File(appConfig.getProjectFolder() + videoFilePost.getFilePath()));
                 if (!del) {
