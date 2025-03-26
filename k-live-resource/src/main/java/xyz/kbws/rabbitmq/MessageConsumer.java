@@ -51,12 +51,11 @@ public class MessageConsumer {
     @Resource
     private ThreadPoolExecutor transferVideoExecutor;
 
+    @Resource
+    private ThreadPoolExecutor deleteVideoFileExecutor;
+
     /**
      * 监听并处理视频转码消息
-     *
-     * @param message
-     * @param channel
-     * @param deliveryTag
      */
     @SneakyThrows
     @RabbitListener(
@@ -119,10 +118,6 @@ public class MessageConsumer {
 
     /**
      * 监听并处理删除视频文件消息
-     *
-     * @param message
-     * @param channel
-     * @param deliveryTag
      */
     @SneakyThrows
     @RabbitListener(
@@ -137,7 +132,7 @@ public class MessageConsumer {
         }
 
         try {
-            transferVideoExecutor.execute(() -> {
+            deleteVideoFileExecutor.execute(() -> {
                 VideoFilePost videoFilePost = JSONUtil.toBean(message, VideoFilePost.class);
                 boolean del = FileUtil.del(new File(appConfig.getProjectFolder() + videoFilePost.getFilePath()));
                 if (!del) {
