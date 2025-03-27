@@ -23,4 +23,5 @@ public class CommentAddRequest implements Serializable {
     private Integer replyCommentId;
     @Size(max = 50)
     private String imgPath;
+    private String replyUserId;
 }

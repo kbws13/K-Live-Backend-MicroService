@@ -17,7 +17,7 @@ public class VideoCommentQuery extends PageRequest {
 
     private String userId;
 
-    private Integer parentCommandId;
+    private Integer parentCommentId;
 
     private Integer topType;
 

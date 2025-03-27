@@ -109,7 +109,7 @@ public class VideoCommentController {
         long pageSize = commentLoadRequest.getPageSize();
         VideoCommentQuery videoCommentQuery = new VideoCommentQuery();
         videoCommentQuery.setVideoId(commentLoadRequest.getVideoId());
-        videoCommentQuery.setParentCommandId(0);
+        videoCommentQuery.setParentCommentId(0);
         videoCommentQuery.setLoadChildren(true);
         videoCommentQuery.setCurrent(current);
         videoCommentQuery.setPageSize(pageSize);

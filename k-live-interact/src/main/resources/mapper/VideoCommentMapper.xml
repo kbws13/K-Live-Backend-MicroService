@@ -38,8 +38,8 @@
         <if test="query.videoId != null and query.videoId != ''">
             and videoId = #{query.videoId}
         </if>
-        <if test="query.parentCommandId != null and query.parentCommandId != ''">
-            and parentCommandId = #{query.parentCommandId}
+        <if test="query.parentCommentId != null">
+            and parentCommentId = #{query.parentCommentId}
         </if>
         <if test="query.topType != null and query.topType != ''">
             and topType = #{query.topType}
