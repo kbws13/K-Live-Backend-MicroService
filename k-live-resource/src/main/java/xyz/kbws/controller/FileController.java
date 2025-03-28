@@ -14,6 +14,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import xyz.kbws.annotation.AuthCheck;
 import xyz.kbws.api.consumer.VideoFileClient;
+import xyz.kbws.api.consumer.VideoFilePostClient;
 import xyz.kbws.common.BaseResponse;
 import xyz.kbws.common.ErrorCode;
 import xyz.kbws.common.ResultUtils;
@@ -26,6 +27,7 @@ import xyz.kbws.exception.BusinessException;
 import xyz.kbws.model.dto.file.PreUploadVideoRequest;
 import xyz.kbws.model.dto.video.VideoPlayRequest;
 import xyz.kbws.model.entity.VideoFile;
+import xyz.kbws.model.entity.VideoFilePost;
 import xyz.kbws.model.vo.UploadingFileVO;
 import xyz.kbws.model.vo.UserVO;
 import xyz.kbws.rabbitmq.MessageProducer;
@@ -55,6 +57,9 @@ import java.io.OutputStream;
 public class FileController {
     @Resource
     private VideoFileClient videoFileClient;
+
+    @Resource
+    private VideoFilePostClient videoFilePostClient;
 
     @Resource
     private RedisComponent redisComponent;
@@ -163,7 +168,7 @@ public class FileController {
     @ApiOperation(value = "获取视频 m3u8 文件")
     @GetMapping("/videoResource/{fileId}")
     public void videoResource(@PathVariable("fileId") @NotEmpty(message = "文件 id 不能为空") String fileId, HttpServletResponse response) {
-        VideoFile videoFile = videoFileClient.getVideoFileById(fileId);
+        VideoFilePost videoFile = videoFilePostClient.getVideoFileById(fileId);
         String filePath = videoFile.getFilePath();
         readFile(response, filePath + File.separator + FileConstant.M3U8_NAME);
         // 更新视频的观看信息
@@ -182,7 +187,7 @@ public class FileController {
     public void videoResourceTS(@PathVariable("fileId") @NotEmpty(message = "文件 id 不能为空") String fileId,
                                 @PathVariable("ts") @NotEmpty(message = "ts 不能为空") String ts,
                                 HttpServletResponse response) {
-        VideoFile videoFile = videoFileClient.getVideoFileById(fileId);
+        VideoFilePost videoFile = videoFilePostClient.getVideoFileById(fileId);
         String filePath = videoFile.getFilePath();
         readFile(response, filePath + File.separator + ts);
     }

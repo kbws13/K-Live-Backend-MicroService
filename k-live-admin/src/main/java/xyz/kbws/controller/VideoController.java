@@ -3,6 +3,7 @@ package xyz.kbws.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +32,7 @@ import java.util.List;
  * @date 2024/12/22
  * @description: 视频接口
  */
+@Slf4j
 @Api(tags = "视频接口")
 @RestController
 @RequestMapping("/video")
