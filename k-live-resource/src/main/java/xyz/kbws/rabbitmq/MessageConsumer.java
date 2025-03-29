@@ -133,10 +133,10 @@ public class MessageConsumer {
 
         try {
             deleteVideoFileExecutor.execute(() -> {
-                VideoFilePost videoFilePost = JSONUtil.toBean(message, VideoFilePost.class);
-                boolean del = FileUtil.del(new File(appConfig.getProjectFolder() + videoFilePost.getFilePath()));
+                String videoFilePostPath = message.trim();
+                boolean del = FileUtil.del(new File(appConfig.getProjectFolder() + videoFilePostPath));
                 if (!del) {
-                    log.error("删除文件失败, 文件路径: {}", videoFilePost.getFilePath());
+                    log.error("删除文件失败, 文件路径: {}", videoFilePostPath);
                 }
             });
             // 手动确认消息

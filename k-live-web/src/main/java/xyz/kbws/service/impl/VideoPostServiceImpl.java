@@ -268,8 +268,9 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
         List<String> delFilePathList = deleteFileList.stream().map(VideoFile::getFilePath).collect(Collectors.toList());
         if (!delFilePathList.isEmpty()) {
             // 发送删除文件消息到消息队列
-            JSONArray jsonArray = JSONUtil.parseArray(delFilePathList);
-            messageProducer.sendMessage(MqConstant.DEL_VIDEO_QUEUE, jsonArray.toString());
+            for (String filePath : delFilePathList) {
+                messageProducer.sendMessage(MqConstant.DEL_VIDEO_QUEUE, filePath);
+            }
         }
         // 保存信息到 ES
         esComponent.saveDoc(dbVideo);
