@@ -88,6 +88,7 @@ public class MessageController {
         MessageQuery messageQuery = new MessageQuery();
         BeanUtil.copyProperties(messageLoadRequest, messageQuery);
         messageQuery.setUserId(userVO.getId());
+        messageQuery.setType(messageLoadRequest.getMessageType());
         List<Message> record = messageService.selectList(messageQuery);
         Page<Message> page = new Page<>(current, pageSize);
         page.setRecords(record);

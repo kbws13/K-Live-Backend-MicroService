@@ -101,7 +101,7 @@ public class VideoCommentController {
     @PostMapping("/loadComment")
     public BaseResponse<VideoCommentResultVO> loadComment(@RequestBody CommentLoadRequest commentLoadRequest, HttpServletRequest request) {
         Video video = videoClient.selectById(commentLoadRequest.getVideoId());
-        if (video.getInteraction() != null && video.getInteraction().contains(UserConstant.ZERO.toString())) {
+        if (video.getInteraction() != null && !video.getInteraction().contains(UserConstant.ONE.toString())) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "UP 主已关闭评论区");
         }
         VideoCommentResultVO videoCommentResultVO = new VideoCommentResultVO();

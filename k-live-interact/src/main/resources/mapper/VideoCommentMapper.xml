@@ -108,6 +108,6 @@
         <if test="opposeField != null">
             ,${opposeField} = ${opposeField} + #{opposeChangeCount}
         </if>
-        where id = #{id}
+        where id = #{id} and userId = #{userId}
     </update>
 </mapper>

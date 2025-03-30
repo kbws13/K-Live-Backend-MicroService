@@ -73,12 +73,15 @@ public class ActionServiceImpl extends ServiceImpl<ActionMapper, Action>
                 }
                 changeCount = dbAction == null ? UserConstant.ONE : -UserConstant.ONE;
                 videoClient.updateCountInfo(action.getVideoId(), actionTypeEnum.getField(), changeCount);
-                if (actionTypeEnum == UserActionTypeEnum.VIDEO_COLLECT) {
+                if (actionTypeEnum == UserActionTypeEnum.VIDEO_LIKE) {
                     // 更新 ES 的收藏数量
                     videoClient.updateDocCount(video.getId(), SearchOrderTypeEnum.VIDEO_COLLECT, changeCount);
                 }
                 break;
             case VIDEO_COIN:
+                if (action.getCount() != 1 && action.getCount() != 2) {
+                    throw new BusinessException(ErrorCode.OPERATION_ERROR);
+                }
                 if (video.getUserId().equals(action.getUserId())) {
                     throw new BusinessException(ErrorCode.OPERATION_ERROR, "不能给自己投币");
                 }
@@ -87,7 +90,7 @@ public class ActionServiceImpl extends ServiceImpl<ActionMapper, Action>
                 }
                 // 减少自己的硬币
                 int updateCount = userClient.updateCoinCount(action.getUserId(), -action.getCount());
-                if (updateCount == 0) {
+                if (updateCount <= 0) {
                     throw new BusinessException(ErrorCode.OPERATION_ERROR, "硬币数量不足");
                 }
                 // 给 UP 主增加硬币
@@ -116,8 +119,8 @@ public class ActionServiceImpl extends ServiceImpl<ActionMapper, Action>
                     this.save(action);
                 }
                 changeCount = dbAction == null ? UserConstant.ONE : -UserConstant.ONE;
-                int opposeChangeCount = -changeCount;
-                videoCommentMapper.updateCount(action.getId(), actionTypeEnum.getField(), changeCount,
+                int opposeChangeCount = changeCount * -1;
+                videoCommentMapper.updateCount(action.getCommentId(), action.getUserId(), actionTypeEnum.getField(), changeCount,
                         opposeAction == null ? null : opposeTypeEnum.getField(), opposeChangeCount);
                 break;
         }

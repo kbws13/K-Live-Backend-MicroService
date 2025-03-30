@@ -177,7 +177,7 @@ public class CreateCenterController {
     public BaseResponse<String> changeVideoInteraction(@NotEmpty String videoId, String interaction, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
-        videoService.changeInteraction(videoId, interaction, userVO.getId());
+        videoService.changeInteraction(videoId,  userVO.getId(), interaction);
         return ResultUtils.success("修改互动设置成功");
     }
 

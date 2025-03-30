@@ -86,7 +86,7 @@ public class StatisticInfoController {
                 .orderByAsc("statisticDate");
         List<StatisticInfo> statisticInfoList;
         if (!StatisticTypeEnum.FANS.getValue().equals(dateType)) {
-            statisticInfoList = webClient.list(queryWrapper);
+            statisticInfoList = webClient.list(dateType);
         } else {
             StatisticInfoQuery query = new StatisticInfoQuery();
             statisticInfoList = webClient.findUserCountTotalInfo(query);

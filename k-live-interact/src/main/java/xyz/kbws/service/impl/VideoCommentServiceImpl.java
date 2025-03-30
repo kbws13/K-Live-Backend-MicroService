@@ -47,7 +47,7 @@ public class VideoCommentServiceImpl extends ServiceImpl<VideoCommentMapper, Vid
         if (video == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "该视频不存在");
         }
-        if (video.getInteraction() != null && video.getInteraction().contains(UserConstant.ZERO.toString())) {
+        if (video.getInteraction() != null && !video.getInteraction().contains(UserConstant.ONE.toString())) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "UP 主已关闭评论区");
         }
         if (replyCommentId != null) {

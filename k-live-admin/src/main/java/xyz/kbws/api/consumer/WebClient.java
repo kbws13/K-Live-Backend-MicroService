@@ -53,7 +53,7 @@ public interface WebClient {
     Map<String, Integer> getTotalStatistic(@RequestParam String userId);
 
     @PostMapping("/inner/statistic/list")
-    List<StatisticInfo> list(@RequestBody QueryWrapper<StatisticInfo> queryWrapper);
+    List<StatisticInfo> list(@RequestParam Integer dateType);
 
     @PostMapping("/inner/statistic/findUserCountTotalInfo")
     List<StatisticInfo> findUserCountTotalInfo(@RequestBody StatisticInfoQuery query);
