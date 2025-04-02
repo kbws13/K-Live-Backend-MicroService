@@ -127,8 +127,9 @@ public class VideoCommentServiceImpl extends ServiceImpl<VideoCommentMapper, Vid
         if (comment.getParentCommentId() == 0) {
             // 删除二级评论
             QueryWrapper<VideoComment> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("parentCommentId", commentId);
-            int changeCount = (int) this.count(queryWrapper);
+            VideoCommentQuery query = new VideoCommentQuery();
+            query.setParentCommentId(commentId);
+            int changeCount = videoCommentMapper.selectCount(query);
             videoClient.updateCountInfo(video.getId(), UserActionTypeEnum.VIDEO_COMMENT.getField(), -changeCount);
             res2 = this.remove(queryWrapper);
         }

@@ -88,9 +88,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
             danmuQueryWrapper.eq("videoId", videoId);
             interactClient.deleteDanmu(danmuQueryWrapper);
             // 删除评论
-            QueryWrapper<VideoComment> videoCommentQueryWrapper = new QueryWrapper<>();
-            videoCommentQueryWrapper.eq("videoId", videoId);
-            interactClient.deleteVideoComment(videoCommentQueryWrapper);
+            interactClient.deleteVideoComment(videoId);
 
             List<VideoFilePost> videoFilePostList = videoFilePostService.list(videoFilePostQueryWrapper);
             for (VideoFilePost videoFilePost : videoFilePostList) {

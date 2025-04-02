@@ -26,26 +26,26 @@
 
     <sql id="Base_Column_List">
         v.id
-        ,parentCommentId,videoId,
-        videoUserId,content,imgPath,
-        userId,replyUserId,topType,
-        postTime,likeCount,hateCount
+        ,v.parentCommentId,v.videoId,
+        v.videoUserId,v.content,v.imgPath,
+        v.userId,v.replyUserId,v.topType,
+        v.postTime,v.likeCount,v.hateCount
     </sql>
 
     <sql id="query_condition">
         where
         1=1
         <if test="query.videoId != null and query.videoId != ''">
-            and videoId = #{query.videoId}
+            and v.videoId = #{query.videoId}
         </if>
         <if test="query.parentCommentId != null">
-            and parentCommentId = #{query.parentCommentId}
+            and v.parentCommentId = #{query.parentCommentId}
         </if>
         <if test="query.topType != null and query.topType != ''">
-            and topType = #{query.topType}
+            and v.topType = #{query.topType}
         </if>
         <if test="query.userId != null and query.userId != ''">
-            and userId = #{query.userId}
+            and v.userId = #{query.userId}
         </if>
         <if test="query.videoNameFuzzy != null and query.videoNameFuzzy != ''">
             and vd.name like CDATA('%', #{query.videoNameFuzzy}, '%')
@@ -68,9 +68,9 @@
         <if test="query.sortField != null">
             order by ${query.sortField}
         </if>
-        <if test="query.pageSize !=- null">
-            LIMIT #{query.pageSize} OFFSET #{query.current}
-        </if>
+        <!--<if test="query.pageSize !=- null">-->
+        <!--    LIMIT #{query.pageSize} OFFSET #{query.current}-->
+        <!--</if>-->
     </select>
 
     <select id="selectCount" resultType="java.lang.Integer">
@@ -98,9 +98,9 @@
         <if test="query.sortField != null">
             order by ${query.sortField}
         </if>
-        <if test="query.pageSize != null">
-            LIMIT #{query.pageSize}
-        </if>
+        <!--<if test="query.pageSize != null">-->
+        <!--    LIMIT #{query.pageSize}-->
+        <!--</if>-->
     </select>
 
     <update id="updateCount">

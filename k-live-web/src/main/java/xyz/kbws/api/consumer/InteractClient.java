@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import xyz.kbws.model.entity.Action;
 import xyz.kbws.model.entity.Danmu;
 import xyz.kbws.model.entity.VideoComment;
@@ -25,5 +26,5 @@ public interface InteractClient {
     void deleteDanmu(@RequestBody QueryWrapper<Danmu> danmuQueryWrapper);
 
     @PostMapping("/inner/videoComment/deleteVideoComment")
-    void deleteVideoComment(@RequestBody QueryWrapper<VideoComment> videoCommentQueryWrapper);
+    void deleteVideoComment(@RequestParam String videoId);
 }
