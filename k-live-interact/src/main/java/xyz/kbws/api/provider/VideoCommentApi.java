@@ -1,9 +1,7 @@
 package xyz.kbws.api.provider;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import xyz.kbws.model.entity.VideoComment;
 import xyz.kbws.model.query.VideoCommentQuery;
 import xyz.kbws.service.VideoCommentService;
@@ -24,7 +22,7 @@ public class VideoCommentApi {
     private VideoCommentService videoCommentService;
 
     @PostMapping("/listByParams")
-    List<VideoComment> listByParams(VideoCommentQuery videoCommentQuery) {
+    List<VideoComment> listByParams(@RequestBody VideoCommentQuery videoCommentQuery) {
         return videoCommentService.listByParams(videoCommentQuery);
     }
 
@@ -34,7 +32,9 @@ public class VideoCommentApi {
     }
 
     @PostMapping("/deleteVideoComment")
-    void deleteVideoComment(QueryWrapper<VideoComment> videoCommentQueryWrapper) {
+    void deleteVideoComment(@RequestParam String videoId) {
+        QueryWrapper<VideoComment> videoCommentQueryWrapper = new QueryWrapper<>();
+        videoCommentQueryWrapper.eq("videoId", videoId);
         videoCommentService.remove(videoCommentQueryWrapper);
     }
 }

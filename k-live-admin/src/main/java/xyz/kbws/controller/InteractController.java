@@ -72,6 +72,7 @@ public class InteractController {
     public BaseResponse<Page<Danmu>> loadDanmu(@RequestBody DanmuLoadRequest danmuLoadRequest) {
         DanmuQuery danmuQuery = new DanmuQuery();
         BeanUtil.copyProperties(danmuLoadRequest, danmuQuery);
+        danmuQuery.setQueryVideoInfo(true);
         List<Danmu> danmuList = interactClient.selectListByParam(danmuQuery);
         long current = danmuLoadRequest.getCurrent();
         long pageSize = danmuLoadRequest.getPageSize();

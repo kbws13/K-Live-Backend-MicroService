@@ -182,7 +182,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         queryWrapper.like(StrUtil.isNotEmpty(nickName), "nickName", nickName);
         queryWrapper.like(StrUtil.isNotEmpty(email), "email", email);
-        queryWrapper.orderByDesc(StrUtil.isNotEmpty(sortField), "sortField", sortField);
+        queryWrapper.orderByDesc(StrUtil.isNotEmpty(sortField), sortField);
         return queryWrapper;
     }
 }

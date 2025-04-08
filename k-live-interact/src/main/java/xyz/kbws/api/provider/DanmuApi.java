@@ -2,6 +2,7 @@ package xyz.kbws.api.provider;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.kbws.model.entity.Danmu;
@@ -24,7 +25,7 @@ public class DanmuApi {
     private DanmuService danmuService;
 
     @PostMapping("/selectListByParam")
-    List<Danmu> selectListByParam(DanmuQuery danmuQuery) {
+    List<Danmu> selectListByParam(@RequestBody DanmuQuery danmuQuery) {
         return danmuService.selectListByParam(danmuQuery);
     }
 
