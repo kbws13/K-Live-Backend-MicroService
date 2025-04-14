@@ -204,7 +204,9 @@ public class VideoPostServiceImpl extends ServiceImpl<VideoPostMapper, VideoPost
         queryWrapper.eq("transferResult", VideoFileTransferResultEnum.TRANSFER.getValue());
         long transferCount = videoFilePostService.count(queryWrapper);
         if (transferCount == 0) {
+            updateWrapper.clear();
             Integer duration = videoFilePostMapper.sumDuration(videoFilePost.getVideoId());
+            updateWrapper.eq("id", videoFilePost.getVideoId());
             updateWrapper.set("duration", duration);
             updateWrapper.set("status", VideoStatusEnum.STATUS2.getValue());
             this.update(updateWrapper);
