@@ -43,7 +43,6 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -151,8 +150,8 @@ public class EsComponent {
                 videoEsDto.setPlayCount(0);
                 videoEsDto.setDanmuCount(0);
                 IndexRequest indexRequest = new IndexRequest(appConfig.getEsIndexName());
-                String jsonStr = JSON.toJSONString(video, SerializerFeature.WriteDateUseDateFormat);
-                indexRequest.id(video.getId()).source(jsonStr, XContentType.JSON);
+                String jsonStr = JSON.toJSONString(videoEsDto, SerializerFeature.WriteDateUseDateFormat);
+                indexRequest.id(videoEsDto.getId()).source(jsonStr, XContentType.JSON);
                 restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);
             }
         } catch (Exception e) {
