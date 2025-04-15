@@ -3,6 +3,8 @@ package xyz.kbws.es;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
@@ -149,7 +151,8 @@ public class EsComponent {
                 videoEsDto.setPlayCount(0);
                 videoEsDto.setDanmuCount(0);
                 IndexRequest indexRequest = new IndexRequest(appConfig.getEsIndexName());
-                indexRequest.id(video.getId()).source(JSONUtil.toJsonStr(videoEsDto), XContentType.JSON);
+                String jsonStr = JSON.toJSONString(video, SerializerFeature.WriteDateUseDateFormat);
+                indexRequest.id(video.getId()).source(jsonStr, XContentType.JSON);
                 restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);
             }
         } catch (Exception e) {
