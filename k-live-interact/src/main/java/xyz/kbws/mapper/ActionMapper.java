@@ -16,6 +16,10 @@ import java.util.List;
 public interface ActionMapper extends BaseMapper<Action> {
 
     List<Action> findList(@Param("query") ActionQuery query);
+
+    List<Action> findListByParam(@Param("videoId") String videoId,
+                                 @Param("userId") String userId,
+                                 @Param("types") List<Integer> types);
 }
 
 

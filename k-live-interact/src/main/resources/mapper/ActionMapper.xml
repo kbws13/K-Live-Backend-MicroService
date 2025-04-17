@@ -51,4 +51,17 @@
             LIMIT #{query.pageSize}
         </if>
     </select>
+
+    <select id="findListByParam" resultType="xyz.kbws.model.entity.Action">
+        select u.*, v.cover videoCover, v.name videoName
+        from action u left join video v on v.id = u.videoId
+        WHERE u.videoId = #{videoId}
+        AND u.userId = #{userId}
+        <if test="types != null and types.size() > 0">
+            AND u.actionType IN
+            <foreach collection="types" item="type" open="(" separator="," close=")">
+                #{type}
+            </foreach>
+        </if>
+    </select>
 </mapper>

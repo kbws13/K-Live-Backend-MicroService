@@ -16,4 +16,6 @@ public interface ActionService extends IService<Action> {
     void saveAction(Action action);
 
     List<Action> findList(ActionQuery actionQuery);
+
+    List<Action> findListByParam(String videoId, String userId, List<Integer> types);
 }

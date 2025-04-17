@@ -2,6 +2,7 @@ package xyz.kbws.api.consumer;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,8 +20,8 @@ import java.util.List;
 @FeignClient(name = "k-live-interact")
 public interface InteractClient {
 
-    @PostMapping("/inner/action/list")
-    List<Action> list(@RequestBody QueryWrapper<Action> queryWrapper);
+    @GetMapping("/inner/action/list")
+    List<Action> list(@RequestParam String videoId, @RequestParam String userId, @RequestParam List<Integer> types);
 
     @PostMapping("/inner/danmu/deleteVideoDanmu")
     void deleteDanmu(@RequestBody QueryWrapper<Danmu> danmuQueryWrapper);

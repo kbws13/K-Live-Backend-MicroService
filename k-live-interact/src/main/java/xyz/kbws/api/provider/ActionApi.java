@@ -1,9 +1,6 @@
 package xyz.kbws.api.provider;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import xyz.kbws.model.entity.Action;
 import xyz.kbws.service.ActionService;
 
@@ -22,8 +19,8 @@ public class ActionApi {
     @Resource
     private ActionService actionService;
 
-    @PostMapping("/list")
-    List<Action> list(QueryWrapper<Action> queryWrapper) {
-        return actionService.list(queryWrapper);
+    @GetMapping("/list")
+    List<Action> list(@RequestParam String videoId, @RequestParam String userId, @RequestParam List<Integer> types) {
+        return actionService.findListByParam(videoId, userId, types);
     }
 }

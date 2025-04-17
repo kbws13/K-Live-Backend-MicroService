@@ -20,6 +20,7 @@ import xyz.kbws.model.query.ActionQuery;
 import xyz.kbws.service.ActionService;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -129,6 +130,11 @@ public class ActionServiceImpl extends ServiceImpl<ActionMapper, Action>
     @Override
     public List<Action> findList(ActionQuery actionQuery) {
         return actionMapper.findList(actionQuery);
+    }
+
+    @Override
+    public List<Action> findListByParam(String videoId, String userId, List<Integer> types) {
+        return actionMapper.findListByParam(videoId, userId, types);
     }
 }
 

@@ -102,12 +102,8 @@ public class VideoController {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
         if (userVO != null) {
-            QueryWrapper<Action> queryWrapper = new QueryWrapper<>();
             List<Integer> types = Arrays.asList(UserActionTypeEnum.VIDEO_LIKE.getValue(), UserActionTypeEnum.VIDEO_COLLECT.getValue(), UserActionTypeEnum.VIDEO_COIN.getValue());
-            queryWrapper.eq("videoId", videoId)
-                    .eq("userId", userVO.getId())
-                    .in("actionType", types);
-            list = interactClient.list(queryWrapper);
+            list = interactClient.list(videoId, userVO.getId(), types);
         }
         VideoInfoResultVO videoInfoResultVO = new VideoInfoResultVO();
         videoInfoResultVO.setVideo(video);
@@ -144,8 +140,8 @@ public class VideoController {
     @ApiOperation(value = "获取推荐视频")
     @GetMapping("/getRecommendVideo")
     public BaseResponse<List<Video>> getRecommendVideo(String keyword, String videoId) {
-        List<Video> records = esComponent.search(true, keyword, SearchOrderTypeEnum.VIDEO_PLAY.getValue(), 1, 10).getRecords();
-        records = records.stream().filter(item -> item.getId().equals(videoId)).collect(Collectors.toList());
+        List<Video> records = esComponent.search(false, keyword, SearchOrderTypeEnum.VIDEO_PLAY.getValue(), 1, 10).getRecords();
+        records = records.stream().filter(item -> !item.getId().equals(videoId)).collect(Collectors.toList());
         return ResultUtils.success(records);
     }
 
