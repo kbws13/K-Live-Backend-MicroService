@@ -57,7 +57,7 @@
             order by #{query.orderBy}
         </if>
         <if test="videoPostQueryRequest.pageSize != null">
-            LIMIT #{query.pageSize} OFFSET #{query.pageNo}
+            LIMIT #{query.pageSize} OFFSET ${(query.current - 1) * query.pageSize}
         </if>
     </select>
 </mapper>

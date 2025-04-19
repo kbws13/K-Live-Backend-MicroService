@@ -66,7 +66,7 @@
             order by #{query.sortField} #{videoQueryRequest.sortOrder}
         </if>
         <if test="query.pageSize != null">
-            limit #{query.pageSize}
+            LIMIT #{query.pageSize} OFFSET ${(query.current - 1) * query.pageSize}
         </if>
     </select>
 </mapper>

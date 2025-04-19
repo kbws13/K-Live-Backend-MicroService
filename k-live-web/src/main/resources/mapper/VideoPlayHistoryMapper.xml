@@ -43,7 +43,7 @@
             order by #{query.sortField} #{query.sortOrder}
         </if>
         <if test="query.pageSize != null">
-            limit #{query.pageSize}
+            LIMIT #{query.pageSize} OFFSET ${(query.current - 1) * query.pageSize}
         </if>
     </select>
 
