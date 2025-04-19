@@ -1,0 +1,41 @@
+version: '3'
+services:
+  k-live-admin:
+    container_name: k-live-admin
+    build:
+      context: ./k-live-admin
+      dockerfile: Dockerfile
+    ports:
+      - "8103:8103"
+
+  k-live-gateway:
+    container_name: k-live-gateway
+    build:
+      context: ./k-live-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8101:8101"
+
+  k-live-interact:
+    container_name: k-live-interact
+    build:
+      context: ./k-live-interact
+      dockerfile: Dockerfile
+    ports:
+      - "8105:8105"
+
+  k-live-resource:
+    container_name: k-live-resource
+    build:
+      context: ./k-live-resource
+      dockerfile: Dockerfile
+    ports:
+      - "8104:8104"
+
+  k-live-web:
+    container_name: k-live-web
+    build:
+      context: ./k-live-web
+      dockerfile: Dockerfile
+    ports:
+      - "8102:8102"
