@@ -50,7 +50,7 @@ public class DanmuServiceImpl extends ServiceImpl<DanmuMapper, Danmu>
     }
 
     @Override
-    public void deleteDanmu(String userId, Integer danmuId) {
+    public Boolean deleteDanmu(String userId, Integer danmuId) {
         Danmu danmu = this.getById(danmuId);
         if (danmu == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
@@ -62,7 +62,7 @@ public class DanmuServiceImpl extends ServiceImpl<DanmuMapper, Danmu>
         if (userId != null && !video.getUserId().equals(userId)) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR);
         }
-        this.removeById(danmuId);
+        return this.removeById(danmuId);
     }
 
     @Override

@@ -22,7 +22,7 @@
         where u.seriesId = #{seriesId}
     </select>
 
-    <select id="selectList" resultType="xyz.kbws.model.entity.SeriesContent">
+    <select id="findList" resultType="xyz.kbws.model.entity.SeriesContent">
         select
         u.*
         <if test="query.queryVideo">
@@ -35,4 +35,15 @@
         where u.seriesId = #{query.seriesId}
         order by ${query.sortField} ${query.sortOrder}
     </select>
+
+    <insert id="insertOrUpdateBatch" parameterType="java.util.List">
+        INSERT INTO seriesContent (seriesId, videoId, userId, sort)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.seriesId}, #{item.videoId}, #{item.userId}, #{item.sort})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        sort = VALUES(sort),
+        userId = VALUES(userId)
+    </insert>
 </mapper>

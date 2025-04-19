@@ -97,9 +97,10 @@ public class DanmuController {
     @ApiOperation(value = "删除弹幕")
     @AuthCheck
     @PostMapping("/deleteDanmu")
-    public void deleteDanmu(@NotNull Integer danmuId, HttpServletRequest request) {
+    public BaseResponse<Boolean> deleteDanmu(@NotNull Integer danmuId, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
-        danmuService.deleteDanmu(userVO.getId(), danmuId);
+        boolean res = danmuService.deleteDanmu(userVO.getId(), danmuId);
+        return ResultUtils.success(res);
     }
 }

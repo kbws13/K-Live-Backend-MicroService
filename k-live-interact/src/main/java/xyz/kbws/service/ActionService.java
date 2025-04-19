@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface ActionService extends IService<Action> {
 
-    void saveAction(Action action);
+    Boolean saveAction(Action action);
 
     List<Action> findList(ActionQuery actionQuery);
 

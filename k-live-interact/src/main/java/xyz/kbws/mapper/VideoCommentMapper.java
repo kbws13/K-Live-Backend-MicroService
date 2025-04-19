@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface VideoCommentMapper extends BaseMapper<VideoComment> {
 
-    List<VideoComment> selectList(@Param("query") VideoCommentQuery query);
+    List<VideoComment> queryList(@Param("query") VideoCommentQuery query);
 
     List<VideoComment> selectListWithChildren(@Param("query") VideoCommentQuery query);
 

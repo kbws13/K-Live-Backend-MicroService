@@ -52,7 +52,7 @@
         </if>
     </sql>
 
-    <select id="selectList" resultType="xyz.kbws.model.entity.VideoComment">
+    <select id="queryList" resultType="xyz.kbws.model.entity.VideoComment">
         select
         <include refid="Base_Column_List"/>
         <if test="query.queryVideoInfo">
@@ -68,9 +68,9 @@
         <if test="query.sortField != null">
             order by ${query.sortField}
         </if>
-        <!--<if test="query.pageSize !=- null">-->
-        <!--    LIMIT #{query.pageSize} OFFSET #{query.current}-->
-        <!--</if>-->
+        <if test="query.pageSize != null">
+            LIMIT #{query.pageSize} OFFSET ${(query.current - 1) * query.pageSize}
+        </if>
     </select>
 
     <select id="selectCount" resultType="java.lang.Integer">
@@ -98,9 +98,9 @@
         <if test="query.sortField != null">
             order by ${query.sortField}
         </if>
-        <!--<if test="query.pageSize != null">-->
-        <!--    LIMIT #{query.pageSize}-->
-        <!--</if>-->
+        <if test="query.pageSize != null">
+            LIMIT #{query.pageSize} OFFSET ${(query.current - 1) * query.pageSize}
+        </if>
     </select>
 
     <update id="updateCount">

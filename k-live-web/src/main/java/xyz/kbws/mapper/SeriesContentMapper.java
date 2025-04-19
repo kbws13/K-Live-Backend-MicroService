@@ -17,7 +17,9 @@ public interface SeriesContentMapper extends BaseMapper<SeriesContent> {
 
     Integer selectMaxSort(@Param("seriesId") Integer seriesId);
 
-    List<SeriesContent> selectList(@Param("query") SeriesContentQuery query);
+    List<SeriesContent> findList(@Param("query") SeriesContentQuery query);
+
+    Integer insertOrUpdateBatch(@Param("list") List<SeriesContent> list);
 }
 
 

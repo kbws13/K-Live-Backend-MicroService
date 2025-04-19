@@ -19,4 +19,5 @@ public class CommentLoadRequest extends PageRequest implements Serializable {
     private String videoId;
     private String videoName;
     private Integer orderType;
+    private Boolean loadChildren = true;
 }

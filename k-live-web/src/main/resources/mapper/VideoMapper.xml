@@ -53,7 +53,10 @@
         <if test="videoQueryRequest.queryUserInfo != null">
             left join user u on u.id = v.userId
         </if>
-        where recommendType = #{videoQueryRequest.recommendType}
+        where 1 = 1
+        <if test="videoQueryRequest.recommendType != null">
+            and recommendType = #{videoQueryRequest.recommendType}
+        </if>
         <if test="videoQueryRequest.parentCategoryId != null">
             and parentCategoryId = #{videoQueryRequest.parentCategoryId}
         </if>
@@ -67,7 +70,7 @@
             order by #{videoQueryRequest.sortField} #{videoQueryRequest.sortOrder}
         </if>
         <if test="videoQueryRequest.pageSize != null">
-            limit #{videoQueryRequest.pageSize}
+            LIMIT #{videoQueryRequest.pageSize} OFFSET ${(videoQueryRequest.current - 1) * videoQueryRequest.pageSize}
         </if>
     </select>
 

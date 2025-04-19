@@ -46,7 +46,7 @@ public class ActionServiceImpl extends ServiceImpl<ActionMapper, Action>
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void saveAction(Action action) {
+    public Boolean saveAction(Action action) {
         Video video = videoClient.selectById(action.getVideoId());
         if (video == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
@@ -78,7 +78,7 @@ public class ActionServiceImpl extends ServiceImpl<ActionMapper, Action>
                     // 更新 ES 的收藏数量
                     videoClient.updateDocCount(video.getId(), SearchOrderTypeEnum.VIDEO_COLLECT, changeCount);
                 }
-                break;
+                return true;
             case VIDEO_COIN:
                 if (action.getCount() != 1 && action.getCount() != 2) {
                     throw new BusinessException(ErrorCode.OPERATION_ERROR);
@@ -99,9 +99,9 @@ public class ActionServiceImpl extends ServiceImpl<ActionMapper, Action>
                 if (updateCount == 0) {
                     throw new BusinessException(ErrorCode.OPERATION_ERROR, "投币失败");
                 }
-                this.save(action);
+                boolean res = this.save(action);
                 videoClient.updateCountInfo(action.getVideoId(), actionTypeEnum.getField(), action.getCount());
-                break;
+                return res;
             case COMMENT_LIKE:
             case COMMENT_HATE:
                 UserActionTypeEnum opposeTypeEnum = actionTypeEnum == UserActionTypeEnum.COMMENT_LIKE ? UserActionTypeEnum.COMMENT_HATE : UserActionTypeEnum.COMMENT_LIKE;
@@ -123,7 +123,9 @@ public class ActionServiceImpl extends ServiceImpl<ActionMapper, Action>
                 int opposeChangeCount = changeCount * -1;
                 videoCommentMapper.updateCount(action.getCommentId(), action.getUserId(), actionTypeEnum.getField(), changeCount,
                         opposeAction == null ? null : opposeTypeEnum.getField(), opposeChangeCount);
-                break;
+                return true;
+            default:
+                return true;
         }
     }
 

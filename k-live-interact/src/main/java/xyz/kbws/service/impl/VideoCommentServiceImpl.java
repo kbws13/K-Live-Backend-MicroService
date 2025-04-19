@@ -1,7 +1,9 @@
 package xyz.kbws.service.impl;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
@@ -11,16 +13,24 @@ import xyz.kbws.common.ErrorCode;
 import xyz.kbws.constant.UserConstant;
 import xyz.kbws.exception.BusinessException;
 import xyz.kbws.mapper.VideoCommentMapper;
+import xyz.kbws.model.dto.comment.CommentLoadRequest;
+import xyz.kbws.model.entity.Action;
 import xyz.kbws.model.entity.User;
 import xyz.kbws.model.entity.Video;
 import xyz.kbws.model.entity.VideoComment;
 import xyz.kbws.model.enums.CommentTopTypeEnum;
 import xyz.kbws.model.enums.UserActionTypeEnum;
 import xyz.kbws.model.query.VideoCommentQuery;
+import xyz.kbws.model.vo.UserVO;
+import xyz.kbws.model.vo.VideoCommentResultVO;
+import xyz.kbws.service.ActionService;
 import xyz.kbws.service.VideoCommentService;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author fangyuan
@@ -39,6 +49,63 @@ public class VideoCommentServiceImpl extends ServiceImpl<VideoCommentMapper, Vid
 
     @Resource
     private UserClient userClient;
+
+    @Resource
+    private ActionService actionService;
+
+    @Override
+    public VideoCommentResultVO loadComment(CommentLoadRequest commentLoadRequest, UserVO userVO) {
+        VideoCommentResultVO videoCommentResultVO = new VideoCommentResultVO();
+        VideoCommentQuery videoCommentQuery = new VideoCommentQuery();
+        long current = commentLoadRequest.getCurrent();
+        long pageSize = commentLoadRequest.getPageSize();
+        videoCommentQuery.setParentCommentId(0);
+        videoCommentQuery.setLoadChildren(commentLoadRequest.getLoadChildren());
+        videoCommentQuery.setQueryVideoInfo(true);
+        videoCommentQuery.setCurrent(current);
+        videoCommentQuery.setPageSize(pageSize);
+        Integer orderType = commentLoadRequest.getOrderType();
+        if (orderType == null || orderType == 0) {
+            videoCommentQuery.setSortField("likeCount desc, id desc");
+        } else {
+            videoCommentQuery.setSortField("id desc");
+        }
+        if (commentLoadRequest.getVideoId() != null && StrUtil.isNotBlank(commentLoadRequest.getVideoId())) {
+            Video video = videoClient.selectById(commentLoadRequest.getVideoId());
+            if (video.getInteraction() != null && !video.getInteraction().contains(UserConstant.ONE.toString())) {
+                throw new BusinessException(ErrorCode.OPERATION_ERROR, "UP 主已关闭评论区");
+            }
+            videoCommentQuery.setVideoId(video.getId());
+        }
+
+        Page<VideoComment> page = new Page<>();
+        List<VideoComment> videoComments = this.listByParams(videoCommentQuery);
+        List<VideoComment> topCommentList = getTopComment(videoCommentQuery.getVideoId());
+        if (!topCommentList.isEmpty()) {
+            List<VideoComment> commentList = videoComments.stream()
+                    .filter(item -> !item.getId().equals(topCommentList.get(0).getId()))
+                    .collect(Collectors.toList());
+            commentList.addAll(0, topCommentList);
+            videoComments = commentList;
+        }
+        page.setCurrent(current);
+        page.setSize(pageSize);
+        page.setTotal(videoComments.size());
+        page.setRecords(videoComments);
+        // 获取用户点赞、投币、收藏
+        List<Action> list = new ArrayList<>();
+        if (userVO != null && commentLoadRequest.getVideoId() != null) {
+            QueryWrapper<Action> query = new QueryWrapper<>();
+            List<Integer> types = Arrays.asList(UserActionTypeEnum.COMMENT_LIKE.getValue(), UserActionTypeEnum.COMMENT_HATE.getValue());
+            query.eq("videoId", commentLoadRequest.getVideoId())
+                    .eq("userId", userVO.getId())
+                    .in("actionType", types);
+            list = actionService.list(query);
+        }
+        videoCommentResultVO.setPage(page);
+        videoCommentResultVO.setActionList(list);
+        return videoCommentResultVO;
+    }
 
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
@@ -80,7 +147,7 @@ public class VideoCommentServiceImpl extends ServiceImpl<VideoCommentMapper, Vid
         if (query.getLoadChildren() != null && query.getLoadChildren()) {
             return videoCommentMapper.selectListWithChildren(query);
         }
-        return videoCommentMapper.selectList(query);
+        return videoCommentMapper.queryList(query);
     }
 
     @GlobalTransactional(rollbackFor = Exception.class)
@@ -134,6 +201,14 @@ public class VideoCommentServiceImpl extends ServiceImpl<VideoCommentMapper, Vid
             res2 = this.remove(queryWrapper);
         }
         return res1 & res2;
+    }
+
+    private List<VideoComment> getTopComment(String videoId) {
+        VideoCommentQuery videoCommentQuery = new VideoCommentQuery();
+        videoCommentQuery.setVideoId(videoId);
+        videoCommentQuery.setTopType(CommentTopTypeEnum.TOP.getValue());
+        videoCommentQuery.setLoadChildren(true);
+        return this.listByParams(videoCommentQuery);
     }
 }
 

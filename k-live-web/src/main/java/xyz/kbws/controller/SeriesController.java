@@ -146,7 +146,7 @@ public class SeriesController {
         seriesContentQuery.setSeriesId(seriesId);
         seriesContentQuery.setSortField("sort");
         seriesContentQuery.setSortOrder(CommonConstant.SORT_ORDER_ASC);
-        List<SeriesContent> seriesContentList = seriesContentService.selectList(seriesContentQuery);
+        List<SeriesContent> seriesContentList = seriesContentService.findList(seriesContentQuery);
         SeriesDetailVO seriesDetailVO = new SeriesDetailVO();
         seriesDetailVO.setSeries(series);
         seriesDetailVO.setSeriesContentList(seriesContentList);

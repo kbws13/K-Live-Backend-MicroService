@@ -44,13 +44,14 @@ public class ActionController {
     @AuthCheck
     @RecordMessage(messageType = MessageTypeEnum.LIKE)
     @PostMapping("/doAction")
-    public void doAction(@RequestBody ActionDoRequest actionDoRequest, HttpServletRequest request) {
+    public BaseResponse<Boolean> doAction(@RequestBody ActionDoRequest actionDoRequest, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
         Action action = new Action();
         BeanUtil.copyProperties(actionDoRequest, action);
         action.setUserId(userVO.getId());
-        actionService.saveAction(action);
+        Boolean res = actionService.saveAction(action);
+        return ResultUtils.success(res);
     }
 
     @ApiOperation(value = "获取收藏视频")

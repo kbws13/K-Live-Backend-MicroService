@@ -97,14 +97,14 @@ public class SeriesServiceImpl extends ServiceImpl<SeriesMapper, Series>
             seriesContent.setSort(++maxSort);
             list.add(seriesContent);
         }
-        seriesContentService.saveOrUpdateBatch(list);
+        seriesContentMapper.insertOrUpdateBatch(list);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteSeries(String userId, Integer seriesId) {
         QueryWrapper<Series> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("seriesId", seriesId)
+        queryWrapper.eq("id", seriesId)
                 .eq("userId", userId);
         boolean remove = this.remove(queryWrapper);
         if (!remove) {

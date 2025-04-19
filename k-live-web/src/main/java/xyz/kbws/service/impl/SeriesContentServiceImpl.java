@@ -23,8 +23,8 @@ public class SeriesContentServiceImpl extends ServiceImpl<SeriesContentMapper, S
     private SeriesContentMapper seriesContentMapper;
 
     @Override
-    public List<SeriesContent> selectList(SeriesContentQuery seriesContentQuery) {
-        return seriesContentMapper.selectList(seriesContentQuery);
+    public List<SeriesContent> findList(SeriesContentQuery seriesContentQuery) {
+        return seriesContentMapper.findList(seriesContentQuery);
     }
 }
 

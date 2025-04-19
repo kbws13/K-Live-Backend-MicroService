@@ -15,7 +15,7 @@ public interface DanmuService extends IService<Danmu> {
 
     void saveDanmu(Danmu danmu);
 
-    void deleteDanmu(String userId, Integer danmuId);
+    Boolean deleteDanmu(String userId, Integer danmuId);
 
     List<Danmu> selectListByParam(DanmuQuery danmuQuery);
 }

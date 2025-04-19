@@ -13,5 +13,5 @@ import java.util.List;
  */
 public interface SeriesContentService extends IService<SeriesContent> {
 
-    List<SeriesContent> selectList(SeriesContentQuery seriesContentQuery);
+    List<SeriesContent> findList(SeriesContentQuery seriesContentQuery);
 }
