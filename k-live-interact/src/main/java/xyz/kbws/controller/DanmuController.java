@@ -52,7 +52,7 @@ public class DanmuController {
     @ApiOperation(value = "发弹幕")
     @AuthCheck
     @PostMapping("/postDanmu")
-    public void postDanmu(@RequestBody DanmuPostRequest danmuPostRequest, HttpServletRequest request) {
+    public BaseResponse<Boolean> postDanmu(@RequestBody DanmuPostRequest danmuPostRequest, HttpServletRequest request) {
         ThrowUtils.throwIf(danmuPostRequest == null, ErrorCode.PARAMS_ERROR);
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
@@ -60,7 +60,8 @@ public class DanmuController {
         BeanUtil.copyProperties(danmuPostRequest, danmu);
         danmu.setUserId(userVO.getId());
         danmu.setPostTime(DateUtil.date());
-        danmuService.saveDanmu(danmu);
+        boolean res = danmuService.saveDanmu(danmu);
+        return ResultUtils.success(res);
     }
 
     @ApiOperation(value = "加载弹幕")

@@ -13,7 +13,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import xyz.kbws.annotation.AuthCheck;
-import xyz.kbws.api.consumer.VideoFileClient;
 import xyz.kbws.api.consumer.VideoFilePostClient;
 import xyz.kbws.common.BaseResponse;
 import xyz.kbws.common.ErrorCode;
@@ -26,7 +25,6 @@ import xyz.kbws.constant.MqConstant;
 import xyz.kbws.exception.BusinessException;
 import xyz.kbws.model.dto.file.PreUploadVideoRequest;
 import xyz.kbws.model.dto.video.VideoPlayRequest;
-import xyz.kbws.model.entity.VideoFile;
 import xyz.kbws.model.entity.VideoFilePost;
 import xyz.kbws.model.vo.UploadingFileVO;
 import xyz.kbws.model.vo.UserVO;
@@ -38,7 +36,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.File;
@@ -55,8 +52,6 @@ import java.io.OutputStream;
 @Api(tags = "文件接口")
 @RestController
 public class FileController {
-    @Resource
-    private VideoFileClient videoFileClient;
 
     @Resource
     private VideoFilePostClient videoFilePostClient;
@@ -195,11 +190,11 @@ public class FileController {
     protected void readFile(HttpServletResponse response, String filePath) {
         File file = new File(appConfig.getProjectFolder() + FileConstant.FILE_FOLDER + filePath);
         if (!file.exists()) {
-            file.mkdirs();
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "文件不存在");
         }
         try (OutputStream out = response.getOutputStream(); FileInputStream in = new FileInputStream(file)) {
             byte[] bytes = new byte[1024];
-            int len = 0;
+            int len;
             while ((len = in.read(bytes)) != -1) {
                 out.write(bytes, 0, len);
             }
@@ -213,10 +208,7 @@ public class FileController {
         if (StrUtil.isEmpty(path)) {
             return true;
         }
-        if (path.contains("../") && path.contains("..\\")) {
-            return false;
-        }
-        return true;
+        return !path.contains("../") || !path.contains("..\\");
     }
 
     public UserVO getTokenInfoFromCookie() {

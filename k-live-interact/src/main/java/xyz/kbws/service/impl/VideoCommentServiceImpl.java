@@ -125,7 +125,7 @@ public class VideoCommentServiceImpl extends ServiceImpl<VideoCommentMapper, Vid
             if (replyComment.getParentCommentId() == 0) {
                 videoComment.setParentCommentId(replyComment.getId());
             } else {
-                videoComment.setParentCommentId(replyComment.getId());
+                videoComment.setParentCommentId(replyComment.getParentCommentId());
                 videoComment.setReplyUserId(replyComment.getUserId());
             }
             User user = userClient.selectById(replyComment.getUserId());

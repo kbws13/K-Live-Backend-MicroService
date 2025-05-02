@@ -7,8 +7,8 @@ import xyz.kbws.domain.model.entity.ThreadPoolConfigEntity;
 import xyz.kbws.domain.model.valobj.RegistryEnum;
 import xyz.kbws.registry.IRegistry;
 
-import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author kbws
@@ -34,6 +34,6 @@ public class RedisRegistry implements IRegistry {
     public void reportThreadPoolConfigParameter(ThreadPoolConfigEntity threadPoolConfigEntity) {
         String cacheKey = RegistryEnum.THREAD_POOL_CONFIG_LIST_KEY.getKey() + "_" + threadPoolConfigEntity.getApplicationName() + "_" + threadPoolConfigEntity.getThreadPoolName();
         RBucket<ThreadPoolConfigEntity> bucket = redissonClient.getBucket(cacheKey);
-        bucket.set(threadPoolConfigEntity, Duration.ofDays(30));
+        bucket.set(threadPoolConfigEntity, 30, TimeUnit.DAYS);
     }
 }

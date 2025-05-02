@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface DanmuService extends IService<Danmu> {
 
-    void saveDanmu(Danmu danmu);
+    Boolean saveDanmu(Danmu danmu);
 
     Boolean deleteDanmu(String userId, Integer danmuId);
 

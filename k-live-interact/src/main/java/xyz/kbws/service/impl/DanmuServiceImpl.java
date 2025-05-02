@@ -35,7 +35,7 @@ public class DanmuServiceImpl extends ServiceImpl<DanmuMapper, Danmu>
 
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
-    public void saveDanmu(Danmu danmu) {
+    public Boolean saveDanmu(Danmu danmu) {
         Video video = videoClient.selectById(danmu.getVideoId());
         if (video == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "该视频不存在");
@@ -47,6 +47,7 @@ public class DanmuServiceImpl extends ServiceImpl<DanmuMapper, Danmu>
         videoClient.updateCountInfo(danmu.getVideoId(), UserActionTypeEnum.VIDEO_DANMU.getField(), 1);
         // 更新 ES 弹幕数量
         videoClient.updateDocCount(danmu.getVideoId(), SearchOrderTypeEnum.VIDEO_DANMU, 1);
+        return true;
     }
 
     @Override
