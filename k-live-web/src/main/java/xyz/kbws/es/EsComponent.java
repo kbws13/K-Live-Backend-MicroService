@@ -226,7 +226,7 @@ public class EsComponent {
 
             // 排序
             searchSourceBuilder.sort("_score", SortOrder.ASC);
-            if (orderType != null) {
+            if (orderType != null && orderTypeEnum != null) {
                 searchSourceBuilder.sort(orderTypeEnum.getField(), SortOrder.ASC);
             }
             current = current == null ? 1 : current;

@@ -53,7 +53,7 @@ public class MessageInterceptor {
     }
 
     private void saveMessage(RecordMessage recordMessage, Object[] arguments, Parameter[] parameters) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
         MessageTypeEnum messageTypeEnum = recordMessage.messageType();

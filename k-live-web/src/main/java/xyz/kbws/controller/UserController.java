@@ -64,7 +64,9 @@ public class UserController {
             Boolean register = userService.register(userRegisterRequest);
             return ResultUtils.success(register);
         } finally {
-            redisComponent.cleanCheckCode(userRegisterRequest.getCheckCodeKey());
+            if (userRegisterRequest != null) {
+                redisComponent.cleanCheckCode(userRegisterRequest.getCheckCodeKey());
+            }
         }
     }
 

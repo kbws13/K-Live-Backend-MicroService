@@ -18,7 +18,7 @@ public class AppInit implements ApplicationRunner {
     private EsComponent esComponent;
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         esComponent.createIndex();
     }
 }

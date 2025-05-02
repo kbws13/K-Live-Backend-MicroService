@@ -62,7 +62,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
     @Resource
     private MessageProducer messageProducer;
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(10);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
 
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override

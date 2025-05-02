@@ -92,7 +92,7 @@ public class MessageConsumer {
                     redisComponent.deleteUploadVideoFile(videoFilePost.getUserId(), videoFilePost.getUploadId());
                     // 合并文件
                     String completeVideo = targetFilePath + FileConstant.TEMP_VIDEO_NAME;
-                    this.union(targetFilePath, completeVideo, true);
+                    this.union(targetFilePath, completeVideo);
                     // 获取播放时长
                     Integer duration = fFmpegUtil.getVideoDuration(completeVideo);
                     videoFilePost.setDuration(duration);
@@ -161,7 +161,7 @@ public class MessageConsumer {
         FileUtil.del(voideFile);
     }
 
-    private void union(String dirPath, String toFilePath, Boolean delSource) {
+    private void union(String dirPath, String toFilePath) {
         File dir = new File(dirPath);
         if (!dir.exists()) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "目录不存在");
@@ -170,25 +170,29 @@ public class MessageConsumer {
         File targetFile = new File(toFilePath);
         try (RandomAccessFile writeFile = new RandomAccessFile(targetFile, "rw")) {
             byte[] bytes = new byte[1024 * 10];
-            for (int i = 0; i < fileList.length; i++) {
-                int len;
-                // 创建读块文件的对象
-                File chunkFile = new File(dirPath + File.separator + i);
-                try (RandomAccessFile readFile = new RandomAccessFile(chunkFile, "r")) {
-                    while ((len = readFile.read(bytes)) != -1) {
-                        writeFile.write(bytes, 0, len);
+            if (fileList != null) {
+                for (int i = 0; i < fileList.length; i++) {
+                    int len;
+                    // 创建读块文件的对象
+                    File chunkFile = new File(dirPath + File.separator + i);
+                    try (RandomAccessFile readFile = new RandomAccessFile(chunkFile, "r")) {
+                        while ((len = readFile.read(bytes)) != -1) {
+                            writeFile.write(bytes, 0, len);
+                        }
+                    } catch (Exception e) {
+                        log.error("合并分片失败: {}", e.getMessage());
+                        throw new BusinessException(ErrorCode.OPERATION_ERROR, "合并分片失败" + e.getMessage());
                     }
-                } catch (Exception e) {
-                    log.error("合并分片失败: {}", e.getMessage());
-                    throw new BusinessException(ErrorCode.OPERATION_ERROR, "合并分片失败" + e.getMessage());
                 }
             }
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "合并文件 " + dirPath + " 出错了");
         } finally {
-            if (delSource) {
-                for (File file : fileList) {
-                    file.delete();
+            if (true) {
+                if (fileList != null) {
+                    for (File file : fileList) {
+                        file.delete();
+                    }
                 }
             }
         }

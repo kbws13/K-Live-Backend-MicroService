@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.seata.spring.annotation.GlobalTransactional;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import xyz.kbws.constant.RedisConstant;
 import xyz.kbws.mapper.FocusMapper;
@@ -112,7 +113,7 @@ public class StatisticInfoServiceImpl extends ServiceImpl<StatisticInfoMapper, S
         }
         statisticInfoList.addAll(actionDataList);
 
-        this.saveOrUpdateBatch(statisticInfoList);
+        ((StatisticInfoService) AopContext.currentProxy()).saveOrUpdateBatch(statisticInfoList);
     }
 
     @Override

@@ -156,7 +156,7 @@ public class HomeController {
 
     @ApiOperation(value = "获取主页视频列表")
     @PostMapping("/loadVideoList")
-    public BaseResponse<Page<Video>> loadVideoList(@RequestBody HomeLoadVideoRequest homeLoadVideoRequest, HttpServletRequest request) {
+    public BaseResponse<Page<Video>> loadVideoList(@RequestBody HomeLoadVideoRequest homeLoadVideoRequest) {
         QueryWrapper<Video> queryWrapper = new QueryWrapper<>();
         long current = homeLoadVideoRequest.getCurrent();
         long pageSize = homeLoadVideoRequest.getPageSize();

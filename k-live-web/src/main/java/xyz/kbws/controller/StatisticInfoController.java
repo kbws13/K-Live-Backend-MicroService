@@ -72,7 +72,7 @@ public class StatisticInfoController {
     public BaseResponse<List<StatisticInfo>> getWeek(Integer dataType, HttpServletRequest request) {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
-        List<String> beforeDays = getBeforeDays(7);
+        List<String> beforeDays = getBeforeDays();
         String startTime = beforeDays.get(0);
         String endTime = beforeDays.get(beforeDays.size() - 1);
         QueryWrapper<StatisticInfo> queryWrapper = new QueryWrapper<>();
@@ -98,10 +98,10 @@ public class StatisticInfoController {
         return ResultUtils.success(res);
     }
 
-    private List<String> getBeforeDays(Integer beforeDays) {
+    private List<String> getBeforeDays() {
         DateTime date = DateUtil.date();
         List<String> dateList = new ArrayList<>();
-        for (int i = beforeDays; i > 0; i--) {
+        for (int i = 7; i > 0; i--) {
             String format = DateUtil.format(DateUtil.offsetDay(date, i), "yyyy-MM-dd");
             dateList.add(format);
         }

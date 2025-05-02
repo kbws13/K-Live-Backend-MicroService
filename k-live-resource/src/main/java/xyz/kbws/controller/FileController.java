@@ -76,7 +76,9 @@ public class FileController {
         }
         String suffix = sourceName.substring(sourceName.lastIndexOf("."));
         response.setContentType("image/" + suffix.replace(".", ""));
-        response.setHeader("Cache-Control", "max-age=2592000");
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
         readFile(response, sourceName);
     }
 
