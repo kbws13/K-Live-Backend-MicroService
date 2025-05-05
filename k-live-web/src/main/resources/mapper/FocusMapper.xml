@@ -16,8 +16,9 @@
     </sql>
 
     <sql id="query_condition">
+        1=1
         <if test="query.userId != null and query.userId != ''">
-            userId = #{query.userId}
+            and userId = #{query.userId}
         </if>
         <if test="query.focusUserId != null and query.focusUserId != ''">
             and focusUserId = #{query.focusUserId}
@@ -56,7 +57,7 @@
         <if test="query.orderBy != null">
             order by #{query.orderBy}
         </if>
-        <if test="videoPostQueryRequest.pageSize != null">
+        <if test="query.pageSize != null">
             LIMIT #{query.pageSize} OFFSET ${(query.current - 1) * query.pageSize}
         </if>
     </select>

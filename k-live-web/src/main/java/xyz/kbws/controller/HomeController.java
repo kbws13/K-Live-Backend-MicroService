@@ -120,7 +120,7 @@ public class HomeController {
         UserVO userVO = redisComponent.getUserVO(token);
         FocusQuery focusQuery = new FocusQuery();
         focusQuery.setUserId(userVO.getId());
-        focusQuery.setPageNo(pageNo);
+        focusQuery.setCurrent(pageNo);
         focusQuery.setPageSize(10);
         focusQuery.setQueryType(UserConstant.ZERO);
         focusQuery.setOrderBy("focusTime desc");
@@ -141,7 +141,7 @@ public class HomeController {
         UserVO userVO = redisComponent.getUserVO(token);
         FocusQuery focusQuery = new FocusQuery();
         focusQuery.setFocusUserId(userVO.getId());
-        focusQuery.setPageNo(pageNo);
+        focusQuery.setCurrent(pageNo);
         focusQuery.setPageSize(10);
         focusQuery.setQueryType(UserConstant.ONE);
         focusQuery.setOrderBy("focusTime desc");

@@ -122,8 +122,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         BeanUtil.copyProperties(countInfoVO, userVO);
         if (currentUserId != null) {
             QueryWrapper<Focus> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("userId", userId)
-                    .eq("focusUserId", currentUserId);
+            queryWrapper.eq("userId", currentUserId)
+                    .eq("focusUserId", userId);
             Focus focus = focusMapper.selectOne(queryWrapper);
             userVO.setHaveFocus(focus != null);
         }

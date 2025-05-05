@@ -12,7 +12,7 @@ import xyz.kbws.model.entity.Focus;
 public class FocusQuery extends Focus {
     private Integer queryType;
 
-    private Integer pageNo;
+    private Integer current;
 
     private Integer pageSize;
 
