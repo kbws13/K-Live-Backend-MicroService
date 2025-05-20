@@ -225,9 +225,9 @@ public class EsComponent {
             }
 
             // 排序
-            searchSourceBuilder.sort("_score", SortOrder.ASC);
+            searchSourceBuilder.sort("_score", SortOrder.DESC);
             if (orderType != null && orderTypeEnum != null) {
-                searchSourceBuilder.sort(orderTypeEnum.getField(), SortOrder.ASC);
+                searchSourceBuilder.sort(orderTypeEnum.getField(), SortOrder.DESC);
             }
             current = current == null ? 1 : current;
             pageSize = pageSize == null ? 20 : pageSize;
@@ -262,7 +262,7 @@ public class EsComponent {
                             Function.identity(),
                             (data1, data2) -> data2
                     ));
-            videoList.forEach(item -> item.setNickName(userMap.get(item.getUserId()).getNickName()));
+            videoList.forEach(item -> item.setNickName(userMap.getOrDefault(item.getUserId(), new User()).getNickName()));
             Page<Video> page = new Page<>();
             page.setTotal(totalCount);
             page.setCurrent(current);

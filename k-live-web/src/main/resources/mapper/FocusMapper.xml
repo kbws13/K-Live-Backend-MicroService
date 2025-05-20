@@ -55,7 +55,7 @@
         where
         <include refid="query_condition"/>
         <if test="query.orderBy != null">
-            order by #{query.orderBy}
+            order by ${query.orderBy}
         </if>
         <if test="query.pageSize != null">
             LIMIT #{query.pageSize} OFFSET ${(query.current - 1) * query.pageSize}

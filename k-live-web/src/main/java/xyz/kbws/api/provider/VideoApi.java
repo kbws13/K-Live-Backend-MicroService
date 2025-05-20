@@ -48,8 +48,8 @@ public class VideoApi {
     }
 
     @PostMapping("/deleteVideo")
-    void deleteVideo(String videoId, String userId) {
-        videoService.deleteVideo(videoId, userId);
+    Boolean deleteVideo(String videoId, String userId) {
+        return videoService.deleteVideo(videoId, userId);
     }
 
     @PostMapping("/count")

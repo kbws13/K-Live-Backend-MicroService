@@ -157,6 +157,8 @@ public class VideoController {
     public BaseResponse<Page<Video>> loadHotVideoList(@RequestBody VideoQueryRequest videoQueryRequest) {
         videoQueryRequest.setQueryUserInfo(true);
         videoQueryRequest.setLastPlayHour(CommonConstant.HOUR_24);
+        videoQueryRequest.setSortField("v.playCount");
+        videoQueryRequest.setSortOrder(CommonConstant.SORT_ORDER_DESC);
         List<Video> videoList = videoService.selectList(videoQueryRequest);
         Page<Video> page = new Page<>();
         page.setRecords(videoList);

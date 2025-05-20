@@ -35,7 +35,7 @@ public interface WebClient {
     Boolean recommendVideo(@RequestParam String videoId);
 
     @PostMapping("/inner/video/deleteVideo")
-    void deleteVideo(@RequestParam String videoId, @RequestParam String userId);
+    Boolean deleteVideo(@RequestParam String videoId, @RequestParam String userId);
 
     @PostMapping("/inner/videoPost/loadVideoPost")
     List<VideoPostVO> loadVideoPost(@RequestBody VideoPostQueryRequest videoPostQueryRequest);

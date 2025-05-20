@@ -40,7 +40,7 @@
         where
         <include refid="queryCondition"/>
         <if test="query.sortField != null">
-            order by #{query.sortField} #{query.sortOrder}
+            order by ${query.sortField} ${query.sortOrder}
         </if>
         <if test="query.pageSize != null">
             LIMIT #{query.pageSize} OFFSET ${(query.current - 1) * query.pageSize}

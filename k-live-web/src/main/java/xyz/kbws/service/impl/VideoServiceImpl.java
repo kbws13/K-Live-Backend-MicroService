@@ -66,7 +66,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
 
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
-    public void deleteVideo(String videoId, String userId) {
+    public Boolean deleteVideo(String videoId, String userId) {
         VideoPost videoPost = videoPostService.getById(videoId);
         if (videoPost == null || userId != null && !videoPost.getUserId().equals(userId)) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
@@ -96,6 +96,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
                 messageProducer.sendMessage(MqConstant.DEL_VIDEO_QUEUE, jsonArray.toString());
             }
         });
+        return true;
     }
 
     @GlobalTransactional(rollbackFor = Exception.class)

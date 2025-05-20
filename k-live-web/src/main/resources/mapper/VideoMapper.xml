@@ -67,7 +67,7 @@
             <![CDATA[ and v.lastPlayTime > date_sub(now(), interval #{videoQueryRequest.lastPlayHour} hour) ]]>
         </if>
         <if test="videoQueryRequest.sortField != null">
-            order by #{videoQueryRequest.sortField} #{videoQueryRequest.sortOrder}
+            order by ${videoQueryRequest.sortField} ${videoQueryRequest.sortOrder}
         </if>
         <if test="videoQueryRequest.pageSize != null">
             LIMIT #{videoQueryRequest.pageSize} OFFSET ${(videoQueryRequest.current - 1) * videoQueryRequest.pageSize}

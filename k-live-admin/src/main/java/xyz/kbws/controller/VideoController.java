@@ -83,8 +83,9 @@ public class VideoController {
     @ApiOperation(value = "删除视频接口")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     @PostMapping("/deleteVideo")
-    public void deleteVideo(@NotEmpty String videoId) {
-        webClient.deleteVideo(videoId, null);
+    public BaseResponse<Boolean> deleteVideo(@NotEmpty String videoId) {
+        boolean res = webClient.deleteVideo(videoId, null);
+        return ResultUtils.success(res);
     }
 
     @ApiOperation(value = "查询视频分 p 接口")
