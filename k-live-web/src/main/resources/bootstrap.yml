@@ -9,9 +9,13 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: ${REMOTE_SERVER_IP}:8848
+        username: ${NACOS_USERNAME}
+        password: ${NACOS_PASSWORD}
       config:
-        server-addr: 127.0.0.1:8848
+        server-addr: ${REMOTE_SERVER_IP}:8848
+        username: ${NACOS_USERNAME}
+        password: ${NACOS_PASSWORD}
         file-extension: yml
         shared-configs:
           - ${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}

@@ -233,6 +233,7 @@ create table videoPlayHistory
 
 create table statisticInfo
 (
+    id            int auto_increment primary key comment '主键 ID',
     statisticDate varchar(10) not null comment '统计日期',
     userId        varchar(10) not null comment '用户 id',
     dataType      tinyint(1)  not null comment '数据统计类型',

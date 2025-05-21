@@ -5,7 +5,6 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.seata.spring.annotation.GlobalTransactional;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import xyz.kbws.constant.RedisConstant;
 import xyz.kbws.mapper.FocusMapper;
@@ -55,7 +54,7 @@ public class StatisticInfoServiceImpl extends ServiceImpl<StatisticInfoMapper, S
     @Override
     public void syncStatisticInfoData() {
         List<StatisticInfo> statisticInfoList = new ArrayList<>();
-        String yesterday = DateUtil.format(DateUtil.yesterday(), "yyyy-MM-dd");
+        String yesterday = DateUtil.format(DateUtil.yesterday(), "yyyyMMdd");
         // 统计播放量
         Map<String, Integer> videoPlayCountMap = redisComponent.getVideoPlayCount(yesterday);
         List<String> videoPlayKeys = new ArrayList<>(videoPlayCountMap.keySet());
@@ -63,7 +62,7 @@ public class StatisticInfoServiceImpl extends ServiceImpl<StatisticInfoMapper, S
                 .map(item -> item.substring(item.lastIndexOf(":") + 1))
                 .collect(Collectors.toList());
         QueryWrapper<Video> videoQueryWrapper = new QueryWrapper<>();
-        videoQueryWrapper.in("id", videoPlayKeys);
+        videoQueryWrapper.in(!videoPlayKeys.isEmpty(), "id", videoPlayKeys);
         List<Video> videoList = videoMapper.selectList(videoQueryWrapper);
 
         Map<String, Integer> videoCountMap = videoList.stream()
@@ -113,7 +112,7 @@ public class StatisticInfoServiceImpl extends ServiceImpl<StatisticInfoMapper, S
         }
         statisticInfoList.addAll(actionDataList);
 
-        ((StatisticInfoService) AopContext.currentProxy()).saveOrUpdateBatch(statisticInfoList);
+        statisticInfoMapper.batchInsert(statisticInfoList);
     }
 
     @Override

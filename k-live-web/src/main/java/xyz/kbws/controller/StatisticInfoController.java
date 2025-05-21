@@ -48,7 +48,7 @@ public class StatisticInfoController {
         String token = request.getHeader("token");
         UserVO userVO = redisComponent.getUserVO(token);
 
-        String yesterday = DateUtil.format(DateUtil.yesterday(), "yyyy-MM-dd");
+        String yesterday = DateUtil.format(DateUtil.yesterday(), "yyyyMMdd");
         QueryWrapper<StatisticInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("statisticDate", yesterday)
                 .eq("userId", userVO.getId());
@@ -98,11 +98,17 @@ public class StatisticInfoController {
         return ResultUtils.success(res);
     }
 
+    @ApiOperation("同步静态信息")
+    @GetMapping("/sync")
+    public void syncStatisticInfo() {
+        statisticInfoService.syncStatisticInfoData();
+    }
+
     private List<String> getBeforeDays() {
         DateTime date = DateUtil.date();
         List<String> dateList = new ArrayList<>();
         for (int i = 7; i > 0; i--) {
-            String format = DateUtil.format(DateUtil.offsetDay(date, i), "yyyy-MM-dd");
+            String format = DateUtil.format(DateUtil.offsetDay(date, -i), "yyyyMMdd");
             dateList.add(format);
         }
         return dateList;

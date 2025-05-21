@@ -5,6 +5,7 @@
 <mapper namespace="xyz.kbws.mapper.StatisticInfoMapper">
 
     <resultMap id="BaseResultMap" type="xyz.kbws.model.entity.StatisticInfo">
+        <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="statisticDate" column="statisticDate" jdbcType="VARCHAR"/>
         <result property="userId" column="userId" jdbcType="VARCHAR"/>
         <result property="dataType" column="dataType" jdbcType="TINYINT"/>
@@ -12,7 +13,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        statisticDate
+        id,statisticDate
         ,userId,dataType,
         count
     </sql>
@@ -76,4 +77,18 @@
         group by statisticDate
         order by statisticDate desc
     </select>
+
+    <insert id="batchInsert">
+        INSERT INTO statisticInfo
+        ( statisticDate, userId, dataType, count )
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+                #{item.statisticDate},
+                #{item.userId},
+                #{item.dataType},
+                #{item.count}
+            )
+        </foreach>
+    </insert>
 </mapper>

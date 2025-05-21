@@ -28,6 +28,8 @@ public interface StatisticInfoMapper extends BaseMapper<StatisticInfo> {
     List<StatisticInfo> selectListTotalInfo(@Param("query") StatisticInfoQuery query);
 
     List<StatisticInfo> selectUserCountTotalInfo(@Param("query") StatisticInfoQuery query);
+
+    void batchInsert(@Param("list") List<StatisticInfo> list);
 }
 
 
