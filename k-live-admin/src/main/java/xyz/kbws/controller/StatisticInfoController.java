@@ -110,7 +110,7 @@ public class StatisticInfoController {
         DateTime date = DateUtil.date();
         List<String> dateList = new ArrayList<>();
         for (int i = 7; i > 0; i--) {
-            String format = DateUtil.format(DateUtil.offsetDay(date, i), "yyyy-MM-dd");
+            String format = DateUtil.format(DateUtil.offsetDay(date, -i), "yyyy-MM-dd");
             dateList.add(format);
         }
         return dateList;
